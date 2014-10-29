@@ -95,11 +95,30 @@ private:
     switch (_msg) {
       // We can read raw input here.
       case WM_INPUT:
-        // Okay, we need to read into some sort of buffer so that other
-        // threads can access the input without having to do locking or anything.
-        
+      {
+        // Read data
+        UINT sizeOfBuffer = sizeof(InputBuffer);
+        if (!GetRawInputData((HRAWINPUT)_l, RID_INPUT, InputBuffer, &sizeOfBuffer, sizeof(RAWINPUTHEADER))) {
+          LOG(Log::CRITICAL) << "GetRawInputData failed! Error: " << GetLastError();
+          break;
+        }
+
+        // Parse this block
+        RAWINPUT* raw = (RAWINPUT*)InputBuffer;
+        switch (raw->header.dwType) {
+          case RIM_TYPEHID:
+            LOG(Log::DEFAULT) << "HID device block!";
+            break;
+          case RIM_TYPEKEYBOARD:
+            LOG(Log::DEFAULT) << "Keyboard block!";
+            break;
+          case RIM_TYPEMOUSE:
+            LOG(Log::DEFAULT) << "Mouse block!";
+            break;
+        }
 
         break;
+      }
 
       // Do the default for other stuff.
       default:
@@ -121,6 +140,7 @@ private:
 private:
   // Vars
   HWND hwnd;
+  char InputBuffer[1024];
 
   // Singleton
   static StaticRawInput input;

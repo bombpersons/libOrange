@@ -22,8 +22,6 @@ int main(int _argc, char** _argv) {
 		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
-
 		window.Display();
 	}
 
