@@ -99,6 +99,12 @@ void* Win32WindowImpl::GetWindowHandle() const {
 	return (void*)hwnd;
 }
 
+// Set the window title
+void Win32WindowImpl::SetTitle(const char* _title) {
+	// TODO: make sure unicode stuff works here.
+	SetWindowTextA(hwnd, _title);
+}
+
 bool Win32WindowImpl::RegisterWindowClass() {
 	static bool classRegistered = false;
 	if (!classRegistered) {
@@ -133,18 +139,21 @@ bool Win32WindowImpl::RegisterWindowClass() {
 }
 
 LRESULT CALLBACK Win32WindowImpl::WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam) {
-    switch(_msg)
-    {
-        case WM_CLOSE:
-            DestroyWindow(_hwnd);
-        break;
-        case WM_DESTROY:
-            PostQuitMessage(0);
-        break;
-        default:
-            return DefWindowProc(_hwnd, _msg, _wParam, _lParam);
-    }
-    return 0;
+  switch(_msg)
+  {
+    case WM_CLOSE:
+      DestroyWindow(_hwnd);
+    	break;
+    case WM_DESTROY:
+      PostQuitMessage(0);
+    	break;
+		case WM_PAINT:
+		case WM_ERASEBKGND: // Ignore the erase background
+			break;
+    default:
+      return DefWindowProc(_hwnd, _msg, _wParam, _lParam);
+  }
+  return 0;
 }
 
 LRESULT CALLBACK Win32WindowImpl::StaticWndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam) {

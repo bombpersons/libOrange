@@ -43,12 +43,25 @@ bool Window::IsOpen() {
 	return false;
 }
 
+bool Window::Update() {
+	// Update the input
+	input->Update();
+
+	// Return whether or not we are open.
+	return IsOpen();
+}
+
 void Window::Display() {
 	// Set our context to be active
 	if (context) {
 		context->SetActive(true);
 		context->Display();
 	}
+}
+
+void Window::SetTitle(const char* _title) {
+	if (window)
+		window->SetTitle(_title);
 }
 
 bool Window::Create(int _width, int _height, int _depth, bool _fullscreen, GLContext::Settings _settings) {

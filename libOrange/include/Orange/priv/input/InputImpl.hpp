@@ -40,7 +40,7 @@ namespace orange {
       virtual bool IsTabletButtonReleased() = 0;
 
       // Update
-      virtual void Update(float _delta) = 0;
+      virtual void Update() = 0;
     private:
 
     };

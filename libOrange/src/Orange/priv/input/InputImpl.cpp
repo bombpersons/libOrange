@@ -12,5 +12,5 @@ typedef win::Win32InputImpl InputImplType;
 
 // Create
 InputImpl* InputImpl::Create(WindowImpl* _window) {
-  return new InputImplType();
+  return new InputImplType(_window);
 }

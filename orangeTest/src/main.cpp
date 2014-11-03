@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include <Orange/logging/Logging.hpp>
 #include <Orange/logging/ConsoleLogListener.hpp>
@@ -6,7 +7,11 @@
 
 #include <Orange/input/Input.hpp>
 
+#include <Orange/timing/Timer.hpp>
+
 #include <GL/gl.h>
+
+#include <cmath>
 
 using namespace orange;
 int main(int _argc, char** _argv) {
@@ -17,10 +22,24 @@ int main(int _argc, char** _argv) {
 	Window window(400, 400, 32, false);
 	window.Run();
 
-	while (window.IsOpen()) {
+	Timer timer;
+	double red = 0;
+	double green = 0;
+	double blue = 0;
+	while (window.Update()) {
 		glViewport(0, 0, 100, 100);
-		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(red, green, blue, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		double delta = timer.Reset();
+		std::stringstream ss;
+		ss << 1.0 / delta;
+		window.SetTitle(ss.str().c_str());
+
+		double remainder = 0.0f;
+		red = modf(red + 1.0f * delta, &remainder);
+		green = modf(green + 2.0f * delta, &remainder);
+		blue = modf(blue + 3.0f * delta, &remainder);
 
 		window.Display();
 	}

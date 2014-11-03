@@ -19,8 +19,14 @@ namespace orange {
 		// Returns true if the window is open
 		bool IsOpen();
 
+		// Update
+		bool Update();
+
 		// Display the window
 		void Display();
+
+		// Set the window title
+		void SetTitle(const char* _title);
 
 		// Create or Recreate the window.
 		bool Create(int _width, int _height, int _depth, bool _fullscreen, GLContext::Settings _settings=GLContext::Settings());

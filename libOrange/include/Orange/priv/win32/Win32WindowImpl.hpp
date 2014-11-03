@@ -29,6 +29,9 @@ namespace orange {
 				// Get the window handle (in this case the HWND)
 				virtual void* GetWindowHandle() const;
 
+				// Set the window title
+				virtual void SetTitle(const char* _title);
+
 			private:
 				LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 

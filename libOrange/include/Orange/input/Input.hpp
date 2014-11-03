@@ -46,17 +46,18 @@ namespace orange {
         LControl,
         LShift,
         LAlt,
-        LSystem,
+        LSuper,
         RControl,
         RShift,
         RAlt,
-        RSystem,
+        RSuper,
         Menu,
         LBracket,
         RBracket,
         SemiColon,
         Comma,
         Period,
+        NumpadPeriod,
         Quote,
         Slash,
         BackSlash,
@@ -65,6 +66,7 @@ namespace orange {
         Dash,
         Space,
         Return,
+        NumpadReturn,
         Back,
         Tab,
         PageUp,
@@ -117,21 +119,14 @@ namespace orange {
         Middle,
         Right,
         Extra1,
-        Extra2
+        Extra2,
+        Extra3,
+        Extra4,
+        Extra5,
+        Count
       };
     }
   }
-
-  class Input {
-  public:
-
-  public:
-    Input();
-    ~Input();
-
-  private:
-
-  };
 }
 
 #endif

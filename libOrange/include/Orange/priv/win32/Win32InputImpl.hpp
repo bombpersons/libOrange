@@ -2,16 +2,51 @@
 #define ORANGE_WIN32INPUTIMPL
 
 #include <Windows.h>
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 
+#include <Orange/priv/window/WindowImpl.hpp>
 #include <Orange/priv/input/InputImpl.hpp>
 
 namespace orange {
   namespace priv {
     namespace win {
+      // This class will create a thread that polls raw input.
+      class RawInput {
+      public:
+        // Constructor
+        RawInput();
+        ~RawInput();
+
+        // Update the buffers
+        bool Update();
+
+      private:
+        // Actual wndproc
+        LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _w, LPARAM _l);
+
+        // Wndproc
+        static LRESULT CALLBACK StaticWndProc(HWND _hwnd, UINT _msg, WPARAM _w, LPARAM _l);
+
+      public:
+        // Keyboard
+        bool KeyboardKeys[InputCode::Key::Count] = {};
+
+        // Mouse
+        int MouseRelX;
+        int MouseRelY;
+        int MouseRelWheel;
+        bool MouseButtons[InputCode::MouseButton::Count];
+
+
+      private:
+        // Vars
+        HWND hwnd;
+        char InputBuffer[1024];
+      };
+
       class Win32InputImpl : public InputImpl {
       public:
-        Win32InputImpl();
+        Win32InputImpl(WindowImpl* _impl);
         virtual ~Win32InputImpl();
 
         // Keyboard
@@ -39,9 +74,18 @@ namespace orange {
         bool IsTabletButtonReleased();
 
         // Update
-        void Update(float _delta);
+        void Update();
 
       private:
+        RawInput rawinput;
+        WindowImpl* window;
+
+        // Keyboard buffer
+        bool keyboardState[InputCode::Key::Count] = {};
+
+        // Mouse
+        glm::vec2 mouseAbsolute;
+        bool mouseButtonState[InputCode::MouseButton::Count] = {};
       };
     }
   }
