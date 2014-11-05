@@ -14,12 +14,11 @@ using namespace orange::priv::win;
 #include <Windows.h>
 
 InputCode::Key::Key ConvertVK(unsigned int vkey, unsigned int scanCode, bool e0, bool e1) {
-  // Find which shift is being pressed (which side)
-  if (vkey == VK_SHIFT)
-    vkey = MapVirtualKey(scanCode, MAPVK_VSC_TO_VK_EX);
-  // Sort out pause / break key
-  else if (vkey == VK_NUMLOCK)
-    scanCode = (MapVirtualKey(vkey, MAPVK_VK_TO_VSC) | 0x100);
+  // Load a standard us keyboard layout
+  static HKL layout = LoadKeyboardLayout("00000409", KLF_ACTIVATE);
+
+  // Map to virtual keys
+  vkey = MapVirtualKeyEx(scanCode, MAPVK_VSC_TO_VK, layout);
 
   if (e1) {
     // Correct the virtual key for escaped sequences
@@ -27,21 +26,128 @@ InputCode::Key::Key ConvertVK(unsigned int vkey, unsigned int scanCode, bool e0,
       scanCode = 0x45; // There's a bug with MapVirtualKey that means
                        // VK_PAUSE doesn't work, so do it manually.
     else
-      scanCode = MapVirtualKey(vkey, MAPVK_VK_TO_VSC);
+      scanCode = MapVirtualKeyEx(vkey, MAPVK_VK_TO_VSC, layout);
+  }
+
+  // Catch any ascii keys
+  if (vkey >= 0x30 && vkey <= 0x5A) {
+    return (InputCode::Key::Key)vkey;
   }
 
   switch (vkey) {
+    case VK_BACK:
+      return InputCode::Key::BackSpace;
+    case VK_TAB:
+      return InputCode::Key::Tab;
+    case VK_PAUSE:
+      return InputCode::Key::Pause;
+    case VK_CAPITAL:
+      return InputCode::Key::CapsLock;
+    case VK_ESCAPE:
+      return InputCode::Key::Escape;
+    case VK_SPACE:
+      return InputCode::Key::Space;
+    case VK_SNAPSHOT:
+      return InputCode::Key::PrintScreen;
+    case VK_LWIN:
+      return InputCode::Key::LSuper;
+    case VK_RWIN:
+      return InputCode::Key::RSuper;
+    case VK_MULTIPLY:
+      return InputCode::Key::NumpadMultiply;
+    case VK_ADD:
+      return InputCode::Key::NumpadAdd;
+    case VK_SUBTRACT:
+      return InputCode::Key::NumpadSubtract;
+    case VK_DIVIDE:
+      return InputCode::Key::NumpadDivide;
+    case VK_F1:
+      return InputCode::Key::F1;
+    case VK_F2:
+      return InputCode::Key::F2;
+    case VK_F3:
+      return InputCode::Key::F3;
+    case VK_F4:
+      return InputCode::Key::F4;
+    case VK_F5:
+      return InputCode::Key::F5;
+    case VK_F6:
+      return InputCode::Key::F6;
+    case VK_F7:
+      return InputCode::Key::F7;
+    case VK_F8:
+      return InputCode::Key::F8;
+    case VK_F9:
+      return InputCode::Key::F9;
+    case VK_F10:
+      return InputCode::Key::F10;
+    case VK_F11:
+      return InputCode::Key::F11;
+    case VK_F12:
+      return InputCode::Key::F12;
+    case VK_F13:
+      return InputCode::Key::F13;
+    case VK_F14:
+      return InputCode::Key::F14;
+    case VK_F15:
+      return InputCode::Key::F15;
+    case VK_F16:
+      return InputCode::Key::F16;
+    case VK_F17:
+      return InputCode::Key::F17;
+    case VK_F18:
+      return InputCode::Key::F18;
+    case VK_F19:
+      return InputCode::Key::F19;
+    case VK_F20:
+      return InputCode::Key::F20;
+    case VK_F21:
+      return InputCode::Key::F21;
+    case VK_F22:
+      return InputCode::Key::F22;
+    case VK_F23:
+      return InputCode::Key::F23;
+    case VK_F24:
+      return InputCode::Key::F24;
+    case VK_NUMLOCK:
+      return InputCode::Key::NumLock;
+    case VK_SCROLL:
+      return InputCode::Key::ScrollLock;
+    case VK_OEM_1:
+      return InputCode::Key::SemiColon;
+    case VK_OEM_PLUS:
+      return InputCode::Key::Add;
+    case VK_OEM_COMMA:
+      return InputCode::Key::Comma;
+    case VK_OEM_MINUS:
+      return InputCode::Key::Subtract;
+    case VK_OEM_PERIOD:
+      return InputCode::Key::Period;
+    case VK_OEM_2:
+      return InputCode::Key::ForwardSlash;
+    case VK_OEM_3:
+      return InputCode::Key::Hash;
+    case VK_OEM_4:
+      return InputCode::Key::LSquareBracket;
+    case VK_OEM_5:
+      return InputCode::Key::Pipe;
+    case VK_OEM_6:
+      return InputCode::Key::RSquareBracket;
+    case VK_OEM_7:
+      return InputCode::Key::Quote;
+
+    // Exceptions
+    case VK_SHIFT:
+      if (e0)
+        return InputCode::Key::RShift;
+      else
+        return InputCode::Key::LShift;
+
     case VK_CONTROL:
       if (e0)
         return InputCode::Key::RControl;
       else
         return InputCode::Key::LControl;
-
-    case VK_MENU:
-      if (e0)
-        return InputCode::Key::RSuper;
-      else
-        return InputCode::Key::LSuper;
 
     case VK_APPS:
       return InputCode::Key::Menu;
