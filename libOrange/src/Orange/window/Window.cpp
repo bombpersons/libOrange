@@ -31,6 +31,11 @@ Window::~Window() {
 	input = 0;
 }
 
+// Get the inputimpl
+priv::InputImpl* Window::Input() {
+	return input;
+}
+
 void Window::Run() {
 	if (window)
 		window->Run();

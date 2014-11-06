@@ -13,6 +13,9 @@ namespace orange {
 		Window(int _width, int _height, int _depth, bool _fullscreen);
 		virtual ~Window();
 
+		// Get the inputimpl
+		priv::InputImpl* Input();
+
 		// Starts the windows message loop
 		void Run();
 

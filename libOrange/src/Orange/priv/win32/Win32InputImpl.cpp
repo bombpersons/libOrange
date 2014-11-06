@@ -358,11 +358,11 @@ LRESULT CALLBACK RawInput::WndProc(HWND _hwnd, UINT _msg, WPARAM _w, LPARAM _l) 
           if (raw->data.keyboard.Flags & RI_KEY_BREAK) {
             // Key is up
             KeyboardKeys[key] = false;
-            LOG(Log::DEFAULT) << "Key Up: " << key;
+            LOG(Log::DEFAULT) << "Key Up: " << key << ": " << KeyboardKeys[key];
           } else {
             // Key is down
             KeyboardKeys[key] = true;
-            LOG(Log::DEFAULT) << "Key Down: " << key;
+            LOG(Log::DEFAULT) << "Key Down: " << key << ": " << KeyboardKeys[key];
           }
           break;
         }
@@ -471,30 +471,30 @@ Win32InputImpl::~Win32InputImpl() {
 
 // Keyboard
 bool Win32InputImpl::IsKeyDown(InputCode::Key::Key _key) {
-
+  return keyboardState[_key];
 }
 bool Win32InputImpl::IsKeyPressed(InputCode::Key::Key _key) {
-
+  return keyboardState[_key] && !oldKeyboardState[_key];
 }
 bool Win32InputImpl::IsKeyReleased(InputCode::Key::Key _key) {
-
+  return !keyboardState[_key] && oldKeyboardState[_key];
 }
 
 // Mouse
 glm::vec2 Win32InputImpl::GetMousePos() {
-
+  return mouseAbsolute;
 }
 bool Win32InputImpl::IsMouseButtonDown(InputCode::MouseButton::MouseButton _button) {
-
+  return mouseButtonState[_button];
 }
 bool Win32InputImpl::IsMouseButtonPressed(InputCode::MouseButton::MouseButton _button) {
-
+  return mouseButtonState[_button] && !oldMouseButtonState[_button];
 }
 bool Win32InputImpl::IsMouseButtonReleased(InputCode::MouseButton::MouseButton _button) {
-
+  return !mouseButtonState[_button] && oldMouseButtonState[_button];
 }
 int Win32InputImpl::GetScrollWheelDelta() {
-
+  return mouseScroll;
 }
 
 // Joysticks / Gamepads
@@ -517,6 +517,7 @@ bool Win32InputImpl::IsTabletButtonReleased() {return false;}
 void Win32InputImpl::Update() {
   // Update raw input.
   rawinput.Update();
+  LOG(Log::DEFAULT) << "VALUE: " << rawinput.KeyboardKeys[296];
 
   // Check if we have focus.
   bool hasFocus = GetForegroundWindow() == window->GetWindowHandle();
@@ -524,9 +525,11 @@ void Win32InputImpl::Update() {
   // Record the keys if we have focus
   if (hasFocus) {
     // Copy the keyboard state
+    memcpy(keyboardState, oldKeyboardState, sizeof(keyboardState));
     memcpy(rawinput.KeyboardKeys, keyboardState, sizeof(keyboardState));
 
     // Copy the mouse button state
+    memcpy(mouseButtonState, oldMouseButtonState, sizeof(mouseButtonState));
     memcpy(rawinput.MouseButtons, mouseButtonState, sizeof(mouseButtonState));
 
     // Get the absolute mouse position
@@ -542,5 +545,8 @@ void Win32InputImpl::Update() {
       mouseAbsolute.x = (float)point.x;
       mouseAbsolute.y = (float)point.y;
     }
+
+    // Get the mouse scroll
+    mouseScroll = rawinput.MouseRelWheel;
   }
 }

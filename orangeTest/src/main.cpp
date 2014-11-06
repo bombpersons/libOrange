@@ -37,9 +37,9 @@ int main(int _argc, char** _argv) {
 		window.SetTitle(ss.str().c_str());
 
 		double remainder = 0.0f;
-		red = modf(red + 1.0f * delta, &remainder);
-		green = modf(green + 2.0f * delta, &remainder);
-		blue = modf(blue + 3.0f * delta, &remainder);
+		red = modf(red + (window.Input()->IsKeyDown(InputCode::Key::Left) ? 1.0f : 0.0f) * delta, &remainder);
+		green = modf(green + (window.Input()->IsKeyDown(InputCode::Key::Up) ? 1.0f : 0.0f) * delta, &remainder);
+		blue = modf(blue + (window.Input()->IsKeyDown(InputCode::Key::Right) ? 1.0f : 0.0f) * delta, &remainder);
 
 		window.Display();
 	}

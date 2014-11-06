@@ -81,10 +81,13 @@ namespace orange {
         WindowImpl* window;
 
         // Keyboard buffer
+        bool oldKeyboardState[InputCode::Key::Count] = {};
         bool keyboardState[InputCode::Key::Count] = {};
 
         // Mouse
         glm::vec2 mouseAbsolute;
+        float mouseScroll;
+        bool oldMouseButtonState[InputCode::MouseButton::Count] = {};
         bool mouseButtonState[InputCode::MouseButton::Count] = {};
       };
     }
