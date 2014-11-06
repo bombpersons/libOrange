@@ -13,6 +13,8 @@
 
 #include <cmath>
 
+#include <glm/glm.hpp>
+
 using namespace orange;
 int main(int _argc, char** _argv) {
 	// Add log listeners.
@@ -35,6 +37,9 @@ int main(int _argc, char** _argv) {
 		std::stringstream ss;
 		ss << 1.0 / delta;
 		window.SetTitle(ss.str().c_str());
+
+		//LOG(Log::DEFAULT) << window.Input()->GetMousePos().x << ", "
+		//									<< window.Input()->GetMousePos().y;
 
 		double remainder = 0.0f;
 		red = modf(red + (window.Input()->IsKeyDown(InputCode::Key::Left) ? 1.0f : 0.0f) * delta, &remainder);

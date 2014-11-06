@@ -355,11 +355,11 @@ LRESULT CALLBACK RawInput::WndProc(HWND _hwnd, UINT _msg, WPARAM _w, LPARAM _l) 
           InputCode::Key::Key key = ConvertVK(vkey, scanCode, e0, e1);
 
           // Set the state.
-          if (raw->data.keyboard.Flags & RI_KEY_BREAK) {
+          if (raw->data.keyboard.Message == WM_KEYUP || raw->data.keyboard.Message == WM_SYSKEYUP) {
             // Key is up
             KeyboardKeys[key] = false;
             LOG(Log::DEFAULT) << "Key Up: " << key << ": " << KeyboardKeys[key];
-          } else {
+          } else if (raw->data.keyboard.Message == WM_KEYDOWN || raw->data.keyboard.Message == WM_SYSKEYDOWN) {
             // Key is down
             KeyboardKeys[key] = true;
             LOG(Log::DEFAULT) << "Key Down: " << key << ": " << KeyboardKeys[key];
@@ -517,7 +517,6 @@ bool Win32InputImpl::IsTabletButtonReleased() {return false;}
 void Win32InputImpl::Update() {
   // Update raw input.
   rawinput.Update();
-  LOG(Log::DEFAULT) << "VALUE: " << rawinput.KeyboardKeys[296];
 
   // Check if we have focus.
   bool hasFocus = GetForegroundWindow() == window->GetWindowHandle();
@@ -525,12 +524,12 @@ void Win32InputImpl::Update() {
   // Record the keys if we have focus
   if (hasFocus) {
     // Copy the keyboard state
-    memcpy(keyboardState, oldKeyboardState, sizeof(keyboardState));
-    memcpy(rawinput.KeyboardKeys, keyboardState, sizeof(keyboardState));
+    memcpy(oldKeyboardState, keyboardState, sizeof(keyboardState));
+    memcpy(keyboardState, rawinput.KeyboardKeys, sizeof(keyboardState));
 
     // Copy the mouse button state
-    memcpy(mouseButtonState, oldMouseButtonState, sizeof(mouseButtonState));
-    memcpy(rawinput.MouseButtons, mouseButtonState, sizeof(mouseButtonState));
+    memcpy(oldMouseButtonState, mouseButtonState, sizeof(mouseButtonState));
+    memcpy(mouseButtonState, rawinput.MouseButtons, sizeof(mouseButtonState));
 
     // Get the absolute mouse position
     POINT point;
