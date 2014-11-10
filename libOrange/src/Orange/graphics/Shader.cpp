@@ -4,11 +4,13 @@
 
 #include <glm/glm.hpp>
 #include <cstring>
+#include <cstdio>
 
 namespace orange {
 
   // Program
   Shader::Shader() {
+    program = 0;
   }
   Shader::~Shader() {
     if (program)
@@ -35,8 +37,35 @@ namespace orange {
     return;
   }
 
+  void Shader::SetShaderSourceFromFile(Shader::ShaderType::Type _type, const char* _path) {
+    // Try and open the file
+    FILE* file = fopen(_path, "r");
+    if (!file) {
+      LOG(Log::CRITICAL) << "Error loading shader. " << _path << " could not be found!";
+      return;
+    }
+
+    // Find the size of the file
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    // Allocate memory to load the file
+    char* data = new char[size];
+    fread(data, size, 1, file);
+
+    // Close the file
+    fclose(file);
+
+    // Set the shader source
+    SetShaderSource(_type, data);
+
+    // Delete the source now that we've loaded
+    delete [] data;
+  }
+
   // Link the shaders into the program
-  bool Shader::LinkProgram() {
+  bool Shader::Compile() {
     // Make sure we have a context
     GLContext::EnsureContext();
 
@@ -113,6 +142,15 @@ namespace orange {
       glDeleteShader(shader);
     }
 
+    LOG(Log::DEFAULT) << "Successfully compiled shader!";
+
+    return true;
+  }
+
+  bool Shader::Link() {
+    if (!program)
+      return false;
+
     // Link the program
     glLinkProgram(program);
 
@@ -136,6 +174,8 @@ namespace orange {
       delete [] log;
       return false;
     }
+
+    LOG(Log::DEFAULT) << "Successfully linked shader!";
 
     return true;
   }

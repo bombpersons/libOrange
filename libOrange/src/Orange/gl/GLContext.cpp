@@ -71,7 +71,7 @@ void GLContext::Init() {
     settings.MajorVersion = 2;
     settings.MinorVersion = 0;
   }
-  
+
   LOG(Log::DEFAULT) << "Created an Opengl " << settings.MajorVersion
 					<< "." << settings.MinorVersion << " context.";
 }
@@ -115,13 +115,15 @@ void GLContext::StaticInit() {
 
   // Create the context and make it active so we can init glew
   shared = new GLContextType(nullptr);
- 
-  // Initialize glew
-  glewInit();  
-  
+
   // Initialize the shared context and what not.
   shared->Init();
   shared->SetActive(false);
+
+  // Initialize glew
+  if (glewInit() != GLEW_OK) {
+      LOG(Log::FATAL) << "Error initializing glew! Opengl Error: " << glGetError();
+  }
 }
 void GLContext::StaticShutdown() {
   if (!shared) {
@@ -151,11 +153,11 @@ void GLContext::EnsureContext() {
 }
 
 // Create a new context
-GLContext* GLContext::Create() {	
+GLContext* GLContext::Create() {
   // Create a context
   GLContext* context = new GLContextType(shared);
   context->Init();
-  
+
   return context;
 }
 GLContext* GLContext::Create(const Settings& _settings, const priv::WindowImpl* _window) {

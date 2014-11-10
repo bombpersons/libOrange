@@ -17,7 +17,7 @@ namespace orange {
 							 unsigned int _depth = 0,
 							 unsigned int _stencil = 0,
 							 unsigned int _antialiasing = 0,
-						   unsigned int _major = 2,
+						   unsigned int _major = 4,
 							 unsigned int _minor = 0) {
 					ColorBits = _color;
 					AlphaBits = _alpha;

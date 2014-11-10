@@ -2,6 +2,7 @@
 #define ORANGE_MESH
 
 #include <GL/glew.h>
+#include <GL/gl.h>
 #include <Orange/gl/GLResource.hpp>
 
 namespace orange {
@@ -25,7 +26,7 @@ namespace orange {
 
     // Set data in a buffer
     bool SetBuffer(int _index, float* _data, unsigned int _elementsize, unsigned int _totalsize);
-    bool SetBufferIndices(int _index, unsigned int* _data, unsigned int _totalsize);
+    bool SetBufferIndices(unsigned int* _data, unsigned int _totalsize);
 
     // Set draw mode
     bool SetDrawMode(DrawMode::Type _drawmode);
@@ -40,8 +41,12 @@ namespace orange {
     // Opengl vbos
     GLuint vbos[ORANGE_MESH_MAX_VBOS] = {};
 
-    // The element size of the vbos
-    unsigned int sizes[ORANGE_MESH_MAX_VBOS] = {};
+    // Indices
+    GLuint ibo;
+
+    // Sizes
+    unsigned int size;
+    unsigned int elementsizes[ORANGE_MESH_MAX_VBOS] = {};
 
     // The vao
     GLuint vao;

@@ -2,6 +2,7 @@
 #define ORANGE_SHADER
 
 #include <GL/glew.h>
+#include <GL/gl.h>
 #include <Orange/gl/GLResource.hpp>
 #include <map>
 
@@ -21,9 +22,11 @@ namespace orange {
 
     // Set a shader on the program
     void SetShaderSource(ShaderType::Type _type, const char* _source);
+    void SetShaderSourceFromFile(Shader::ShaderType::Type _type, const char* _path);
 
     // Link the shaders into the program
-    bool LinkProgram();
+    bool Compile();
+    bool Link();
 
     // Set an attribute on the shader.
     void SetAttribute(const char* _name, int _index);
