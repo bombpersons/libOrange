@@ -46,13 +46,15 @@ int main(int _argc, char** _argv) {
 
 	// Create a simple shader.
 	const char* fragment =
+		"#version 400\n"
 		"in vec3 color;\n"
 		"out vec4 frag_color;\n"
 		"void main() {\n"
-		"	frag_color = vec4(1.0, 0.0, 0.0, 1.0);\n"
+		"	frag_color = vec4(color, 1.0);\n"
 		"}\n";
 
 	const char* vertex =
+		"#version 400\n"
 		"layout(location = 0) in vec3 vertex_position;\n"
 		"layout(location = 1) in vec3 vertex_color;\n"
 
@@ -77,8 +79,8 @@ int main(int _argc, char** _argv) {
 	// Make a timer for delta time.
 	Timer timer;
 	while (window.Update()) {
-		glViewport(0, 0, 100, 100);
-		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+		glViewport(0, 0, 400, 400);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		double delta = timer.Reset();
@@ -88,7 +90,7 @@ int main(int _argc, char** _argv) {
 
 		// Draw
 		shader.Bind();
-		//mesh.Draw();
+		mesh.Draw();
 
 		// Flip the display
 		window.Display();

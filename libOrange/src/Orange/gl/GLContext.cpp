@@ -148,7 +148,7 @@ void GLContext::StaticShutdown() {
 // an active opengl context. It will create one
 // if one doesn't exist.
 void GLContext::EnsureContext() {
-  if (currentContext)
+  if (!currentContext)
     GetInternalContext()->SetActive(true);
 }
 
