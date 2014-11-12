@@ -23,6 +23,10 @@ namespace orange {
 			// Set the window title
 			virtual void SetTitle(const char* _title) = 0;
 
+			// Get width and height
+			virtual int GetWidth() = 0;
+			virtual int GetHeight() = 0;
+
 			// Change the width, height, depth or fullscreen flags
 			static WindowImpl* Create(int _width, int _height, int _depth, bool _fullscreen);
 

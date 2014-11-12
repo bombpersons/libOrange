@@ -193,82 +193,6 @@ namespace orange {
     glBindAttribLocation(program, _index, _name);
   }
 
-  // Set a uniform on the shader
-  template <typename T>
-  void Shader::SetUniform(const char* _name, T& _val) {
-    // Make sure we have a context
-    GLContext::EnsureContext();
-
-    // Can't set a uniform if we don't have a program
-    if (!program)
-      return;
-
-    // See if we have the uniform cached
-    GLuint uniform;
-    if (uniforms.find(_name) == uniforms.end()) {
-      // Find the uniform
-      uniform = glGetUniformLocation(program, _name);
-      if (uniform == -1)
-        return;
-
-      uniforms[_name] == uniform;
-    }
-
-    // Get the currently bound shader
-    GLint prevProgram;
-    glGetIntegerv(GL_CURRENT_PROGRAM, &prevProgram);
-
-    // Bind our program
-    glUseProgram(program);
-
-    // Actually set the uniform value.
-    InternalSetUniform(uniforms[_name], _val);
-
-    // Bind the previously bound program
-    glUseProgram((GLuint)prevProgram);
-  }
-
-  // Internal function to set uniform
-  template <typename T>
-  void Shader::InternalSetUniform(GLuint _name, T& _val) {
-    LOG(Log::CRITICAL) << "Error setting uniform on shader! There is no generic InternalSetUniform method!";
-  }
-
-  template <>
-  void Shader::InternalSetUniform(GLuint _name, unsigned int& _val) {
-    glUniform1ui(_name, _val);
-  }
-
-  template <>
-  void Shader::InternalSetUniform(GLuint _name, int& _val) {
-    glUniform1i(_name, _val);
-  }
-
-  template <>
-  void Shader::InternalSetUniform(GLuint _name, float& _val) {
-    glUniform1f(_name, _val);
-  }
-
-  template <>
-  void Shader::InternalSetUniform(GLuint _name, glm::vec2& _val) {
-    glUniform2f(_name, _val.x, _val.y);
-  }
-
-  template <>
-  void Shader::InternalSetUniform(GLuint _name, glm::vec3& _val) {
-    glUniform3f(_name, _val.x, _val.y, _val.z);
-  }
-
-  template <>
-  void Shader::InternalSetUniform(GLuint _name, glm::vec4& _val) {
-    glUniform4f(_name, _val.x, _val.y, _val.z, _val.w);
-  }
-
-  template <>
-  void Shader::InternalSetUniform(GLuint _name, glm::mat4& _val) {
-    glUniformMatrix4fv(_name, 16, false, (GLfloat*)&_val);
-  }
-
   // Convert our shader types to opengl shader types
   GLenum Shader::GetGlShaderType(Shader::ShaderType::Type _type) {
     switch (_type) {
@@ -292,22 +216,5 @@ namespace orange {
     // Bind our program
     glUseProgram(program);
   }
-
-  // Declare valid template instantiations
-  template void Shader::SetUniform<unsigned int>(const char* _name, unsigned int& _val);
-  template void Shader::SetUniform<int>(const char* _name, int& _val);
-  template void Shader::SetUniform<float>(const char* _name, float& _val);
-  template void Shader::SetUniform<glm::vec2>(const char* _name, glm::vec2& _val);
-  template void Shader::SetUniform<glm::vec3>(const char* _name, glm::vec3& _val);
-  template void Shader::SetUniform<glm::vec4>(const char* _name, glm::vec4& _val);
-  template void Shader::SetUniform<glm::mat4>(const char* _name, glm::mat4& _val);
-
-  template void Shader::InternalSetUniform<unsigned int>(GLuint _name, unsigned int& _val);
-  template void Shader::InternalSetUniform<int>(GLuint _name, int& _val);
-  template void Shader::InternalSetUniform<float>(GLuint _name, float& _val);
-  template void Shader::InternalSetUniform<glm::vec2>(GLuint _name, glm::vec2& _val);
-  template void Shader::InternalSetUniform<glm::vec3>(GLuint _name, glm::vec3& _val);
-  template void Shader::InternalSetUniform<glm::vec4>(GLuint _name, glm::vec4& _val);
-  template void Shader::InternalSetUniform<glm::mat4>(GLuint _name, glm::mat4& _val);
 
 }

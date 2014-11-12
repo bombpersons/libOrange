@@ -8,12 +8,17 @@
 #include <Orange/timing/Timer.hpp>
 #include <Orange/graphics/Shader.hpp>
 #include <Orange/graphics/Mesh.hpp>
+#include <Orange/maths/Maths.hpp>
+
+#include <Orange/util/FPSDebugCamera.hpp>
 
 #include <GL/gl.h>
 
 #include <cmath>
 
 #include <glm/glm.hpp>
+#define GLM_FORCE_RADIANS
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace orange;
 int main(int _argc, char** _argv) {
@@ -26,9 +31,9 @@ int main(int _argc, char** _argv) {
 
 	// Create a mesh
 	glm::vec3 positions[] {
-		glm::vec3(0.0f, 0.5f, 0.0f),
-		glm::vec3(0.5f, -0.5f, 0.0f),
-		glm::vec3(-0.0f, -0.5f, 0.0f)
+		glm::vec3(0.0f, 5.0f, -1.0f),
+		glm::vec3(5.0f, -5.0f, -1.0f),
+		glm::vec3(-5.0f, -5.0f, -1.0f)
 	};
 
 	glm::vec3 colors[] {
@@ -36,8 +41,6 @@ int main(int _argc, char** _argv) {
 		glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	};
-
-	//LOG(Log::WARNING) << glGetError();
 
 	Mesh mesh;
 	mesh.SetBuffer(0, (float*)positions, 3, 3);
@@ -58,13 +61,14 @@ int main(int _argc, char** _argv) {
 		"layout(location = 0) in vec3 vertex_position;\n"
 		"layout(location = 1) in vec3 vertex_color;\n"
 
+		"uniform mat4 projection;\n"
+		"uniform mat4 view;\n"
+
 		"out vec3 color;\n"
 		"void main() {\n"
 		"	color = vertex_color;\n"
-		"	gl_Position = vec4(vertex_position, 1.0);\n"
+		"	gl_Position = projection * view * vec4(vertex_position, 1.0);\n"
 		"}\n";
-
-	//LOG(Log::WARNING) << glGetError();
 
 	Shader shader;
 	shader.SetShaderSource(Shader::ShaderType::Vertex, vertex);
@@ -74,12 +78,13 @@ int main(int _argc, char** _argv) {
 	shader.SetAttribute("vertex_position", 0);
 	shader.Link();
 
-	LOG(Log::WARNING) << glGetError();
+	// Create a camera
+	FPSDebugCamera camera;
 
 	// Make a timer for delta time.
 	Timer timer;
 	while (window.Update()) {
-		glViewport(0, 0, 400, 400);
+		glViewport(0, 0, (float)window.GetWidth(), (float)window.GetHeight());
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -87,6 +92,14 @@ int main(int _argc, char** _argv) {
 		std::stringstream ss;
 		ss << 1.0 / delta;
 		window.SetTitle(ss.str().c_str());
+
+		// Create a projection matrix
+		glm::mat4 projection = glm::perspectiveFov(M_PI / 4.0f, (float)window.GetWidth(), (float)window.GetHeight(), 0.01f, 1000.0f);
+		shader.SetUniform("projection", projection);
+
+		// Update the camera
+		camera.Update(delta, &window);
+		shader.SetUniform("view", camera.GetCameraMatrix());
 
 		// Draw
 		shader.Bind();

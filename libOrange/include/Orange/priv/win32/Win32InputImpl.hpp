@@ -56,6 +56,7 @@ namespace orange {
 
         // Mouse
         glm::vec2 GetMousePos();
+        glm::vec2 GetRelativeMouseMove();
         bool IsMouseButtonDown(InputCode::MouseButton::MouseButton _button);
         bool IsMouseButtonPressed(InputCode::MouseButton::MouseButton _button);
         bool IsMouseButtonReleased(InputCode::MouseButton::MouseButton _button);
@@ -86,6 +87,7 @@ namespace orange {
 
         // Mouse
         glm::vec2 mouseAbsolute;
+        glm::vec2 mouseRelative;
         float mouseScroll;
         bool oldMouseButtonState[InputCode::MouseButton::Count] = {};
         bool mouseButtonState[InputCode::MouseButton::Count] = {};

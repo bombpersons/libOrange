@@ -22,6 +22,7 @@ namespace orange {
 
       // Mouse
       virtual glm::vec2 GetMousePos() = 0;
+      virtual glm::vec2 GetRelativeMouseMove() = 0;
       virtual bool IsMouseButtonDown(InputCode::MouseButton::MouseButton _button) = 0;
       virtual bool IsMouseButtonPressed(InputCode::MouseButton::MouseButton _button) = 0;
       virtual bool IsMouseButtonReleased(InputCode::MouseButton::MouseButton _button) = 0;

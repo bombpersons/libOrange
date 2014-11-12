@@ -105,6 +105,18 @@ void Win32WindowImpl::SetTitle(const char* _title) {
 	SetWindowTextA(hwnd, _title);
 }
 
+// Get the width and height
+int Win32WindowImpl::GetWidth() {
+	RECT rect;
+	GetClientRect(hwnd, &rect);
+	return rect.right;
+}
+int Win32WindowImpl::GetHeight() {
+	RECT rect;
+	GetClientRect(hwnd, &rect);
+	return rect.bottom;
+}
+
 bool Win32WindowImpl::RegisterWindowClass() {
 	static bool classRegistered = false;
 	if (!classRegistered) {

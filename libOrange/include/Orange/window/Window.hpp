@@ -31,6 +31,10 @@ namespace orange {
 		// Set the window title
 		void SetTitle(const char* _title);
 
+		// Get the width and height
+		int GetWidth();
+		int GetHeight();
+
 		// Create or Recreate the window.
 		bool Create(int _width, int _height, int _depth, bool _fullscreen, GLContext::Settings _settings=GLContext::Settings());
 

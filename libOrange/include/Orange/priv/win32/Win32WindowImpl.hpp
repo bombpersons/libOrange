@@ -32,6 +32,10 @@ namespace orange {
 				// Set the window title
 				virtual void SetTitle(const char* _title);
 
+				// Get the width and height
+				virtual int GetWidth();
+				virtual int GetHeight();
+
 			private:
 				LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 

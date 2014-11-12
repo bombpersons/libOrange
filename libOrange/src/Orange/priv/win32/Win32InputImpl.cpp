@@ -278,6 +278,9 @@ RawInput::RawInput() {
 
     // Start the message pump.
     UpdateWindow(hwnd);
+
+    // Update input
+    Update();
   } else {
     LOG(Log::FATAL) << "Couldn't register rawinput window class... Error: " << GetLastError();
   }
@@ -368,21 +371,9 @@ LRESULT CALLBACK RawInput::WndProc(HWND _hwnd, UINT _msg, WPARAM _w, LPARAM _l) 
         }
         case RIM_TYPEMOUSE:
         {
-          if (raw->data.mouse.usFlags & MOUSE_ATTRIBUTES_CHANGED) {
-
-          }
-          if (raw->data.mouse.usFlags & MOUSE_MOVE_RELATIVE) {
-            // Update our mouse data.
-            MouseRelX += raw->data.mouse.lLastX;
-            MouseRelY += raw->data.mouse.lLastY;
-          }
-          if (raw->data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE) {
-            // Probably should just ignore this message.
-            // We're getting absolute mouse position elsewhere.
-          }
-          if (raw->data.mouse.usFlags & MOUSE_VIRTUAL_DESKTOP) {
-            // Not quite sure what difference this flag makes.
-          }
+          // Relative mouse data
+          MouseRelX += raw->data.mouse.lLastX;
+          MouseRelY += raw->data.mouse.lLastY;
 
           // Buttons
           if (raw->data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN) {
@@ -484,6 +475,9 @@ bool Win32InputImpl::IsKeyReleased(InputCode::Key::Key _key) {
 glm::vec2 Win32InputImpl::GetMousePos() {
   return mouseAbsolute;
 }
+glm::vec2 Win32InputImpl::GetRelativeMouseMove() {
+  return mouseRelative;
+}
 bool Win32InputImpl::IsMouseButtonDown(InputCode::MouseButton::MouseButton _button) {
   return mouseButtonState[_button];
 }
@@ -515,6 +509,13 @@ bool Win32InputImpl::IsTabletButtonReleased() {return false;}
 
 // Update
 void Win32InputImpl::Update() {
+  // Get these values before updating since Update() will clear them.
+  // Get the mouse scroll
+  mouseScroll = rawinput.MouseRelWheel;
+
+  // Get relative mouse movement
+  mouseRelative = glm::vec2(rawinput.MouseRelX, rawinput.MouseRelY);
+
   // Update raw input.
   rawinput.Update();
 
@@ -544,8 +545,5 @@ void Win32InputImpl::Update() {
       mouseAbsolute.x = (float)point.x;
       mouseAbsolute.y = (float)point.y;
     }
-
-    // Get the mouse scroll
-    mouseScroll = rawinput.MouseRelWheel;
   }
 }

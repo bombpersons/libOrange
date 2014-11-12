@@ -69,6 +69,18 @@ void Window::SetTitle(const char* _title) {
 		window->SetTitle(_title);
 }
 
+int Window::GetWidth() {
+	if (window)
+		return window->GetWidth();
+	return 0;
+}
+
+int Window::GetHeight() {
+	if (window)
+		return window->GetHeight();
+	return 0;
+}
+
 bool Window::Create(int _width, int _height, int _depth, bool _fullscreen, GLContext::Settings _settings) {
 	// Delete the old window if it exists
 	if (window)
