@@ -134,7 +134,7 @@ namespace orange {
 
   template <>
   inline void Shader::InternalSetUniform<glm::mat4>(GLuint _name, glm::mat4 _val) {
-    glUniformMatrix4fv(_name, 16, false, (GLfloat*)&_val);
+    glUniformMatrix4fv(_name, 1, false, (GLfloat*)&_val);
   }
 }
 

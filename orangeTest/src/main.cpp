@@ -77,12 +77,10 @@ int main(int _argc, char** _argv) {
   Texture texture;
   texture.LoadFromFile("test.jpg");
 
-  glEnable(GL_DEPTH_TEST);
-
   // Create a framebuffer
-  FrameBuffer framebuffer(512, 512);
-  framebuffer.Bind();
-  framebuffer.UnBind();
+  //FrameBuffer framebuffer(512, 512);
+  //framebuffer.Bind();
+  //framebuffer.UnBind();
 
 	// TODO:
 	// MAKE A SPRITE BATCH CLASS THAT USES GEOMETRY SHADERS
@@ -91,6 +89,10 @@ int main(int _argc, char** _argv) {
 	// Make a timer for delta time.
 	Timer timer;
 	while (window.Update()) {
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_LEQUAL);
+
 		glViewport(0, 0, (float)window.GetWidth(), (float)window.GetHeight());
 		glClearColor(0.8f, 0.6f, 0.6f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -16,8 +16,8 @@ namespace orange {
 		struct Settings {
 			Settings(unsigned int _color = 24,
 							 unsigned int _alpha = 8,
-							 unsigned int _depth = 0,
-							 unsigned int _stencil = 0,
+							 unsigned int _depth = 24,
+							 unsigned int _stencil = 8,
 							 unsigned int _antialiasing = 0,
 						   unsigned int _major = 4,
 							 unsigned int _minor = 0) {
