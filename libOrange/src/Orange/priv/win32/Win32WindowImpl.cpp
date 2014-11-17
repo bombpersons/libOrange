@@ -77,6 +77,9 @@ bool Win32WindowImpl::RunThread() {
 		DispatchMessage(&msg);
 	}
 
+  // Window closed
+  hwnd = nullptr;
+
 	// Window is no longer open.
 	return true;
 }
@@ -107,12 +110,12 @@ void Win32WindowImpl::SetTitle(const char* _title) {
 
 // Get the width and height
 int Win32WindowImpl::GetWidth() {
-	RECT rect;
+  RECT rect = {};
 	GetClientRect(hwnd, &rect);
 	return rect.right;
 }
 int Win32WindowImpl::GetHeight() {
-	RECT rect;
+  RECT rect = {};
 	GetClientRect(hwnd, &rect);
 	return rect.bottom;
 }

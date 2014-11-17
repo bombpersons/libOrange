@@ -2,7 +2,7 @@
 #define ORANGE_SHADER
 
 #include <GL/glew.h>
-#include <GL/gl.h>
+#include <GL/GL.h>
 #include <Orange/gl/GLResource.hpp>
 #include <Orange/gl/GLContext.hpp>
 #include <Orange/logging/Logging.hpp>

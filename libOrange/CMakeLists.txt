@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(libOrange)
 
 #Get all of our source files
-file(GLOB_RECURSE LIBORANGE_SOURCES src/*.cpp src/*.c)
+file(GLOB_RECURSE LIBORANGE_SOURCES src/*.cpp src/*.c include/*.hpp include/*.h)
 
 #Add the library
 add_library(orange STATIC ${LIBORANGE_SOURCES})

@@ -24,18 +24,22 @@ namespace orange {
     Mesh();
     ~Mesh();
 
+    // Set the mesh as a cube
+    // Set's positions and UV coords
+    static const Mesh& Cube();
+
     // Set data in a buffer
     bool SetBuffer(int _index, float* _data, unsigned int _elementsize, unsigned int _totalsize);
     bool SetBufferIndices(unsigned int* _data, unsigned int _totalsize);
 
     // Set draw mode
-    bool SetDrawMode(DrawMode::Type _drawmode);
+    void SetDrawMode(DrawMode::Type _drawmode);
 
     // Write the vbo into a vao
     bool Finish();
 
     // Draw the mesh
-    void Draw();
+    void Draw() const;
 
   private:
     // Opengl vbos

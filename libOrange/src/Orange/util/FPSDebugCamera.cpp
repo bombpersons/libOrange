@@ -86,8 +86,8 @@ namespace orange {
     glm::vec2 turn = _window->Input()->GetRelativeMouseMove();
     Turn(turn);
 
-    LOG(Log::DEFAULT) << "Pos: " << position.x << ", " << position.y << ", " << position.z
-                      << " Rot: " << rotation.x << ", " << rotation.y;
+    //LOG(Log::DEFAULT) << "Pos: " << position.x << ", " << position.y << ", " << position.z
+    //                  << " Rot: " << rotation.x << ", " << rotation.y;
   }
 
   // Get the camera matrix

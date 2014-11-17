@@ -1,6 +1,7 @@
 #include <Orange/graphics/Mesh.hpp>
 #include <Orange/gl/GLContext.hpp>
 #include <Orange/logging/Logging.hpp>
+#include <Orange/maths/Maths.hpp>
 
 namespace orange {
   Mesh::Mesh() {
@@ -19,8 +20,113 @@ namespace orange {
       glDeleteVertexArrays(1, &vao);
   }
 
+  // Set the mesh as a cube
+  // Set's positions and UV coords
+  static Mesh* cube = nullptr;
+  const Mesh& Mesh::Cube() {
+    static float verts[] = {
+      -0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+      -0.5f,  0.5f, -0.5f,
+      -0.5f, -0.5f, -0.5f,
+
+      -0.5f, -0.5f,  0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+      -0.5f,  0.5f,  0.5f,
+      -0.5f, -0.5f,  0.5f,
+
+      -0.5f,  0.5f,  0.5f,
+      -0.5f,  0.5f, -0.5f,
+      -0.5f, -0.5f, -0.5f,
+      -0.5f, -0.5f, -0.5f,
+      -0.5f, -0.5f,  0.5f,
+      -0.5f,  0.5f,  0.5f,
+
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+
+      -0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f, -0.5f,  0.5f,
+      -0.5f, -0.5f,  0.5f,
+      -0.5f, -0.5f, -0.5f,
+
+      -0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+      -0.5f,  0.5f,  0.5f,
+      -0.5f,  0.5f, -0.5f
+    };
+
+    static float uvs[] = {
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+
+      0.0f, 1.0f,
+      1.0f, 1.0f,
+      1.0f, 0.0f,
+      1.0f, 0.0f,
+      0.0f, 0.0f,
+      0.0f, 1.0f,
+
+      0.0f, 1.0f,
+      1.0f, 1.0f,
+      1.0f, 0.0f,
+      1.0f, 0.0f,
+      0.0f, 0.0f,
+      0.0f, 1.0f
+    };
+
+    if (!cube) {
+      cube = new Mesh();
+      cube->SetBuffer(0, verts, 3, 36);
+      cube->SetBuffer(1, uvs, 2, 36);
+      cube->SetDrawMode(DrawMode::Triangles);
+      cube->Finish();
+    }
+
+    return *cube;
+  }
+
   // Set data in a buffer
   bool Mesh::SetBuffer(int _index, float* _data, unsigned int _elementsize, unsigned int _totalsize) {
+    GLContext::EnsureContext();
+    
     // If the total size is not the same as previous buffers, complain and error
     if (_totalsize != size) {
       if (size != 0) {
@@ -53,6 +159,8 @@ namespace orange {
   }
 
   bool Mesh::SetBufferIndices(unsigned int* _data, unsigned int _totalsize) {
+    GLContext::EnsureContext();
+    
     // If the total size is not the same as previous buffers, complain and error
     if (_totalsize != size) {
       if (size != 0) {
@@ -82,12 +190,14 @@ namespace orange {
   }
 
   // Set draw mode
-  bool Mesh::SetDrawMode(Mesh::DrawMode::Type _drawmode) {
+  void Mesh::SetDrawMode(Mesh::DrawMode::Type _drawmode) {
     drawmode = _drawmode;
   }
 
   // Write the vbo into a vao
   bool Mesh::Finish() {
+    GLContext::EnsureContext();
+
     if (vao)
       glDeleteVertexArrays(1, &vao);
 
@@ -127,7 +237,9 @@ namespace orange {
   }
 
   // Draw
-  void Mesh::Draw() {
+  void Mesh::Draw() const {
+    GLContext::EnsureContext();
+
     if (!vao)
       return;
 

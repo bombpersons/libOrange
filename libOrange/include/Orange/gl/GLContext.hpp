@@ -2,8 +2,10 @@
 #define ORANGE_GLCONTEXT
 
 // This file is heavily based on the SMFL GlContext class.
-
 #include <Orange/util/NoCopy.hpp>
+
+#include <GL/glew.h>
+#include <GL/GL.h>
 
 namespace orange {
 	namespace priv {
