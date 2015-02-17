@@ -25,7 +25,7 @@ namespace orange {
     // Read the data into opengl
     Bind();
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _buf);
-    glGenerateMipmap(GL_TEXTURE_2D); // <--- VERY IMPORTANT, You just get a black texture otherwise.
+    GenMipMaps();
 
     // Set the width and height
     width = _width;
@@ -91,6 +91,11 @@ namespace orange {
 
     glActiveTexture(GL_TEXTURE0 + _num);
     glBindTexture(GL_TEXTURE_2D, texture);
+  }
+
+  void Texture::GenMipMaps() {
+    Bind();
+    glGenerateMipmap(GL_TEXTURE_2D);
   }
 
   GLuint Texture::GetId() {

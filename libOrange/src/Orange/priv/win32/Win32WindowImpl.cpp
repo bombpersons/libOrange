@@ -110,12 +110,12 @@ void Win32WindowImpl::SetTitle(const char* _title) {
 
 // Get the width and height
 int Win32WindowImpl::GetWidth() {
-  RECT rect = {};
+  RECT rect = {0, 0, 1, 1};
 	GetClientRect(hwnd, &rect);
 	return rect.right;
 }
 int Win32WindowImpl::GetHeight() {
-  RECT rect = {};
+  RECT rect = {0, 0, 1, 1};
 	GetClientRect(hwnd, &rect);
 	return rect.bottom;
 }

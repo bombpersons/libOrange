@@ -52,6 +52,9 @@ namespace orange {
 
     // Bind the texture
     void Bind(int _num=0);
+    
+    // Generate mip maps
+    void GenMipMaps();
 
     // Get the texture id
     GLuint GetId();

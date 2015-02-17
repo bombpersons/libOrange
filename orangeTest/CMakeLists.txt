@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(orangeTest)
 
 #Get all of our source files
-file(GLOB_RECURSE ORANGETEST_SOURCES src/*.cpp /src/*.c)
+file(GLOB_RECURSE ORANGETEST_SOURCES src/*.cpp src/*.c)
 
 #The executable
 add_executable(orangeTest ${ORANGETEST_SOURCES})

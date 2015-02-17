@@ -20,6 +20,9 @@ namespace orange {
     void Bind();
     void UnBind();
 
+    // Get the color texture
+    Texture* GetColor(int _index);
+
   private:
     // The frame buffer object
     GLuint framebuffer;

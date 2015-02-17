@@ -78,9 +78,7 @@ int main(int _argc, char** _argv) {
   texture.LoadFromFile("test.jpg");
 
   // Create a framebuffer
-  //FrameBuffer framebuffer(512, 512);
-  //framebuffer.Bind();
-  //framebuffer.UnBind();
+  FrameBuffer framebuffer(512, 512);
 
 	// TODO:
 	// MAKE A SPRITE BATCH CLASS THAT USES GEOMETRY SHADERS
@@ -89,32 +87,45 @@ int main(int _argc, char** _argv) {
 	// Make a timer for delta time.
 	Timer timer;
 	while (window.Update()) {
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_TRUE);
-		glDepthFunc(GL_LEQUAL);
+    double delta = timer.Reset();
+    std::stringstream ss;
+    ss << 1.0 / delta;
+    window.SetTitle(ss.str().c_str());
 
+    // Create a projection matrix
+    glm::mat4 projection = glm::perspectiveFov(M_PI / 4.0f, (float)window.GetWidth(), (float)window.GetHeight(), 0.01f, 1000.0f);
+    shader.SetUniform("projection", projection);
+
+    // Update the camera
+    camera.Update(delta, &window);
+    shader.SetUniform("view", camera.GetCameraMatrix());
+
+    // Draw to framebuffer
+    framebuffer.Bind();
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+    glClearColor(0.6f, 0.8f, 0.6f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    texture.Bind();
+    shader.Bind();
+    shader.SetUniform("tex", 0);
+    mesh.Draw();
+    framebuffer.UnBind();
+
+    // Draw to screen
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
 		glViewport(0, 0, (float)window.GetWidth(), (float)window.GetHeight());
 		glClearColor(0.8f, 0.6f, 0.6f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		double delta = timer.Reset();
-		std::stringstream ss;
-		ss << 1.0 / delta;
-		window.SetTitle(ss.str().c_str());
-
-		// Create a projection matrix
-		glm::mat4 projection = glm::perspectiveFov(M_PI / 4.0f, (float)window.GetWidth(), (float)window.GetHeight(), 0.01f, 1000.0f);
-		shader.SetUniform("projection", projection);
-
-		// Update the camera
-		camera.Update(delta, &window);
-		shader.SetUniform("view", camera.GetCameraMatrix());
-
-		// Draw
-    texture.Bind();
-		shader.Bind();
+    framebuffer.GetColor(0)->Bind();
+    shader.Bind();
     shader.SetUniform("tex", 0);
-		mesh.Draw();
+    mesh.Draw();
 
 		// Flip the display
 		window.Display();

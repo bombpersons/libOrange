@@ -13,12 +13,12 @@ using namespace orange::priv::win;
 
 #include <Windows.h>
 
-InputCode::Key::Key ConvertVK(unsigned int vkey, unsigned int scanCode, bool e0, bool e1) {
-  // Load a standard us keyboard layout
-  static HKL layout = LoadKeyboardLayout("00000409", KLF_ACTIVATE);
+// Load a standard us keyboard layout
+HKL QuertyLayout = LoadKeyboardLayout("00000409", KLF_ACTIVATE);
 
+InputCode::Key::Key ConvertVK(unsigned int vkey, unsigned int scanCode, bool e0, bool e1) {
   // Map to virtual keys
-  vkey = MapVirtualKeyEx(scanCode, MAPVK_VSC_TO_VK, layout);
+  vkey = MapVirtualKeyEx(scanCode, MAPVK_VSC_TO_VK, QuertyLayout);
 
   if (e1) {
     // Correct the virtual key for escaped sequences
@@ -26,7 +26,7 @@ InputCode::Key::Key ConvertVK(unsigned int vkey, unsigned int scanCode, bool e0,
       scanCode = 0x45; // There's a bug with MapVirtualKey that means
                        // VK_PAUSE doesn't work, so do it manually.
     else
-      scanCode = MapVirtualKeyEx(vkey, MAPVK_VK_TO_VSC, layout);
+      scanCode = MapVirtualKeyEx(vkey, MAPVK_VK_TO_VSC, QuertyLayout);
   }
 
   // Catch any ascii keys
