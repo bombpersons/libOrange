@@ -16,6 +16,7 @@ namespace orange {
       enum Type {
         Fragment,
         Vertex,
+        Geometry,
         Count
       };
     };
@@ -40,6 +41,7 @@ namespace orange {
 
     // Bind this program
     void Bind();
+
   private:
     // Internal function to set uniform
     template <typename T>

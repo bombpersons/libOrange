@@ -3,6 +3,7 @@
 
 #include <Orange/gl/GLContext.hpp>
 #include <Orange/gl/GLResource.hpp>
+#include <Orange/maths/Maths.hpp>
 
 namespace orange {
   class Texture : public GLResource {
@@ -51,13 +52,18 @@ namespace orange {
     void SetMinFilter(FilterMode::Type _filter);
 
     // Bind the texture
-    void Bind(int _num=0);
+    void Bind(int _num=0) const;
     
     // Generate mip maps
     void GenMipMaps();
 
     // Get the texture id
     GLuint GetId();
+
+    // Get the size of the texture
+    glm::ivec2 GetDimensions() { return glm::ivec2(width, height); }
+    int GetWidth() { return width; }
+    int GetHeight() { return height; }
 
   private:
     // The texture id

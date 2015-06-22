@@ -200,6 +200,8 @@ namespace orange {
         return GL_VERTEX_SHADER;
       case Shader::ShaderType::Fragment:
         return GL_FRAGMENT_SHADER;
+      case Shader::ShaderType::Geometry:
+        return GL_GEOMETRY_SHADER;
       case Shader::ShaderType::Count:
       default:
         LOG(Log::WARNING) << "Invalid shader type!";

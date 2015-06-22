@@ -6,7 +6,6 @@
 #include <Orange/gl/GLResource.hpp>
 
 namespace orange {
-  #define ORANGE_MESH_MAX_VBOS 16
   class Mesh : public GLResource {
   public:
   public:
@@ -16,35 +15,18 @@ namespace orange {
     // Set the mesh as a cube
     // Set's positions and UV coords
     static const Mesh& Cube();
+	
+	bool SetData(void* _data, unsigned int _totalSize);
+	bool SetBuffer(unsigned int _id, unsigned int _elementSize, GLenum _type, unsigned int _stride, unsigned int _offset);
+	bool SetIndices(unsigned int* _data, unsigned int _count);
+	void SetVertexCount(unsigned int _count) { elementCount = _count; }
 
-    // Set data in a buffer
-    bool SetBuffer(int _index, unsigned char* _data, unsigned int _componentsize, unsigned int _componentcount, unsigned int _totalsize, GLenum _type);
-    bool SetBufferIndices(unsigned int* _data, unsigned int _totalsize);
-
-    // Set draw mode
-    void SetDrawMode(GLenum _drawmode);
-
-    // Write the vbo into a vao
-    bool Finish();
+	void SetDrawMode(GLenum _drawmode);
 
     // Draw the mesh
     void Draw() const;
 
   private:
-    // Info for one buffer
-    struct BufferInfo {
-      char* data;
-      unsigned int componentcount;
-      unsigned int componentsize;
-      GLenum type;
-    };
-  private:
-    // How many elements
-    unsigned int elementcount;
-
-    // buffer info
-    BufferInfo bufferInfo[ORANGE_MESH_MAX_VBOS] = {};
-
     // VBO
     GLuint vbo;
 
@@ -56,6 +38,9 @@ namespace orange {
 
     // The draw mode
     GLenum drawmode;
+
+	// The amount of elements to draw.
+	unsigned int elementCount;
   };
 }
 

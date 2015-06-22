@@ -83,7 +83,7 @@ namespace orange {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLenum)_filter);
   }
 
-  void Texture::Bind(int _num) {
+  void Texture::Bind(int _num) const {
     if (!texture)
       return;
     if (_num > GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
