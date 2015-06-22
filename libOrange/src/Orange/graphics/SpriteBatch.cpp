@@ -31,6 +31,15 @@ namespace orange {
     delete [] textures;
   }
 
+  // Set matrices
+  void SpriteBatch::SetProjection(const glm::mat4& _mat) {
+    GetShader()->SetUniform("projection", _mat);
+  }
+
+  void SpriteBatch::SetView(const glm::mat4& _mat) {
+    GetShader()->SetUniform("view", _mat);
+  }
+
   // Draw
   void SpriteBatch::Draw(Texture* _texture, glm::vec2 _pos, glm::vec2 _scale, float _rot, glm::vec2 _origin, glm::vec2 _uvTopLeft, glm::vec2 _uvBottomRight) {
     // If we have a full buffer, then flush it first.
@@ -65,7 +74,7 @@ namespace orange {
 
     // Set the position.
     point.position = _pos;
-    point.scale = glm::vec2(1.0f, 1.0f); //glm::vec2(_scale.x * _texture->GetWidth(), _scale.y * _texture->GetHeight()); 
+    point.scale = glm::vec2(_scale.x * _texture->GetWidth(), _scale.y * _texture->GetHeight()); 
     point.rotation = _rot;
     point.origin = _origin;
     point.uvTop = _uvTopLeft;
@@ -118,27 +127,22 @@ namespace orange {
       in vec2 uvBottom;
       in uint texture;
 
-      out outData {
-        vec2 vOrigin;
-        float vRotation;
-        vec2 vScale;
-
-        vec2 vUvTop;
-        vec2 vUvBottom;
-        uint vTexture;
-
-        vec2 uvCoord;
-      } outData;
+      out vec2 vOrigin;
+      out float vRotation;
+      out vec2 vScale;
+      out vec2 vUvTop;
+      out vec2 vUvBottom;
+      out uint vTexture;
 
       void main() {
-        outData.vOrigin = origin;
-        outData.vRotation = rotation;
-        outData.vScale = scale;//projection * view * vec4(scale, 0.0, 1.0);
-        outData.vUvTop = uvTop;
-        outData.vUvBottom = uvBottom;
-        outData.vTexture = texture;
+        vOrigin = origin;
+        vRotation = rotation;
+        vScale = scale;
+        vUvTop = uvTop;
+        vUvBottom = uvBottom;
+        vTexture = texture;
 
-        gl_Position = vec4(position, 0.0, 1.0);//projection * view * vec4(position, 0.0, 1.0);
+        gl_Position = vec4(position, 0.0, 1.0);
       }
       )END";
 
@@ -147,42 +151,54 @@ namespace orange {
       layout (points) in;
       layout (triangle_strip, max_vertices=4) out;
 
+      uniform mat4 projection;
+      uniform mat4 view;
+
       in vec2 vOrigin[];
       in float vRotation[];
       in vec2 vScale[];
       in vec2 vUvTop[];
       in vec2 vUvBottom[];
-      in uint texture[];
+      in uint vTexture[];
       
       out vec2 uvCoord;
+      out uint outTexture;
+
+      vec4 rotatePoint(float cosValue, float sinValue, vec2 origin, vec2 point) {
+        // Get the difference between each point and the origin and rotate it.
+        vec2 diff = point - origin;
+        vec2 rotated;
+        rotated.x = diff.x * cosValue - diff.y * sinValue;
+        rotated.y = diff.y * cosValue + diff.x * sinValue;
+        vec2 vertex = origin + rotated;
+        return vec4(vertex, 0.0, 1.0);
+      }
 
       void main() {
-        //gl_Position = vec4(gl_in[0].gl_Position.xy + vec2(vScale[0].x * -0.5, vScale[0].y * -0.5), 0.0, 1.0);
-        //gl_Position = gl_in[0].gl_Position;
-        gl_Position = vec4(-0.1, -0.1, 0.0, 1.0);
+        float cosTheta = cos(vRotation[0]);
+        float sinTheta = sin(vRotation[0]);
+        
+        vec2 globalOrigin = gl_in[0].gl_Position.xy;
+        vec2 pos = gl_in[0].gl_Position.xy - vOrigin[0];
+
+        gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos);
         uvCoord = vUvTop[0];
-        //outTexture = texture[0];
+        outTexture = vTexture[0];
         EmitVertex();
 
-        //gl_Position = vec4(gl_in[0].gl_Position.xy + vec2(vScale[0].x * 0.5, vScale[0].y * -0.5), 0.0, 1.0);
-        //gl_Position = gl_in[0].gl_Position;
-        gl_Position = vec4(0.1, -0.1, 0.0, 1.0);
+        gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos + vec2(vScale[0].x, 0.0));
         uvCoord = vec2(vUvBottom[0].x, vUvTop[0].y);
-        //outTexture = texture[0];
+        outTexture = vTexture[0];
         EmitVertex();
 
-        //gl_Position = vec4(gl_in[0].gl_Position.xy + vec2(vScale[0].x * -0.5, vScale[0].y * 0.5), 0.0, 1.0);
-        //gl_Position = gl_in[0].gl_Position;
-        gl_Position = vec4(-0.1, 0.1, 0.0, 1.0);
+        gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos + vec2(0, vScale[0].y));
         uvCoord = vec2(vUvTop[0].x, vUvBottom[0].y);
-        //outTexture = texture[0];
+        outTexture = vTexture[0];
         EmitVertex();
 
-        //gl_Position = vec4(gl_in[0].gl_Position.xy + vec2(vScale[0].x * 0.5, vScale[0].y * 0.5), 0.0, 1.0);
-        //gl_Position = gl_in[0].gl_Position;
-        gl_Position = vec4(0.1, 0.1, 0.0, 1.0);
+        gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos + vec2(vScale[0].x, vScale[0].y));
         uvCoord = vUvBottom[0];
-        //outTexture = texture[0];
+        outTexture = vTexture[0];
         EmitVertex();
 
         EndPrimitive();
@@ -195,6 +211,7 @@ namespace orange {
       #version 400
       
       in vec2 uvCoord;
+      in uint outTexture;
 
       out vec4 frag_color;
 
@@ -202,13 +219,12 @@ namespace orange {
 
       void main() {
         frag_color = texture2D(tex, uvCoord);
-        //frag_color = vec4(1.0, 0.0, 0.0, 1.0);
       }
       )END";
 
     shader.SetShaderSource(Shader::ShaderType::Fragment, fragment);
     shader.SetShaderSource(Shader::ShaderType::Vertex, vertex);
-    //shader.SetShaderSource(Shader::ShaderType::Geometry, geometry);
+    shader.SetShaderSource(Shader::ShaderType::Geometry, geometry);
     shader.Compile();
     shader.SetAttribute("position", 0);
     shader.SetAttribute("origin", 1);
@@ -218,12 +234,6 @@ namespace orange {
     shader.SetAttribute("uvBottom", 5);
     shader.SetAttribute("texture", 6);
     shader.Link();
-
-    shader.SetUniform("tex", 0);
-
-    // TEMP
-    shader.SetUniform("projection", glm::ortho(-1000.0f, 1000.0f, 1000.0f, -1000.0f));
-    shader.SetUniform("view", glm::mat4());
 
     compiled = true;
   

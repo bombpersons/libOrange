@@ -15,6 +15,10 @@ namespace orange {
     SpriteBatch(int _maxbatch=512, int _maxTextures=1);
     ~SpriteBatch();
 
+    // Set the matrices to use
+    void SetProjection(const glm::mat4& _mat);
+    void SetView(const glm::mat4& _mat);
+
     // Draw something
     void Draw(Texture* _texture, glm::vec2 _pos, glm::vec2 _scale, float _rot, glm::vec2 _origin, glm::vec2 _uvTopLeft, glm::vec2 _uvBottomRight);
 

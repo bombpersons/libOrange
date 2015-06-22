@@ -126,8 +126,14 @@ int main(int _argc, char** _argv) {
 		mesh.Draw();
 
     // Draw some sprites
-    spriteBatch.Draw(&texture, glm::vec2(-0.5, -0.5), glm::vec2(1.0, 1.0), -90, glm::vec2(0.0, 0.0), glm::vec2(1.0, 1.0), glm::vec2(0.0, 0.0));
-    spriteBatch.Draw(&texture, glm::vec2(0.5, 0.5), glm::vec2(1.0, 1.0), 90, glm::vec2(2.0, 2.0), glm::vec2(1.0, 1.0), glm::vec2(0.0, 0.0));
+    glm::vec2 pos = window.Input()->GetMousePos();
+
+    static float rotate = 0;
+    rotate = fmod(rotate + M_PI * delta, 2 * M_PI);
+
+    spriteBatch.SetProjection(glm::ortho(0.0f, (float)window.GetWidth(), (float)window.GetHeight(), 0.0f));
+    spriteBatch.SetView(glm::mat4());
+    spriteBatch.Draw(&texture, pos, glm::vec2(1.0, 1.0), rotate, glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), glm::vec2(0.0, 0.0));
     spriteBatch.Flush();
 
 		// Flip the display
