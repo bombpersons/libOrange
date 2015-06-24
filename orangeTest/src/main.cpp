@@ -57,8 +57,8 @@ int main(int _argc, char** _argv) {
 	"out vec2 texcoord;\n"
 	"void main() {\n"
 	" texcoord = vertex_texcoord;\n"
-		"	gl_Position = projection * view * vec4(vertex_position, 1.0);\n"
-		"}\n";
+	"	gl_Position = projection * view * vec4(vertex_position, 1.0);\n"
+	"}\n";
 
 	Shader shader;
 	shader.SetShaderSource(Shader::ShaderType::Vertex, vertex);
@@ -74,10 +74,9 @@ int main(int _argc, char** _argv) {
 
 	// Load a texture
 	Texture texture;
-	texture.LoadFromFile("gradient.jpg");
-
-	// Create a framebuffer
-	FrameBuffer framebuffer(512, 512);
+	texture.LoadFromFile("test.png");
+  Texture texture2;
+  texture2.LoadFromFile("rainbow.jpg");
 
   // Create a spriteBatch
   SpriteBatch spriteBatch;
@@ -97,20 +96,6 @@ int main(int _argc, char** _argv) {
 		// Update the camera
 		camera.Update(delta, &window);
 		shader.SetUniform("view", camera.GetCameraMatrix());
-
-		//// Draw to framebuffer
-		//framebuffer.Bind();
-		//glEnable(GL_DEPTH_TEST);
-		//glDepthMask(GL_TRUE);
-		//glDepthFunc(GL_LEQUAL);
-		//glClearColor(0.6f, 0.8f, 0.6f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//texture.Bind();
-		//shader.Bind();
-		//shader.SetUniform("tex", 0);
-		//mesh.Draw();
-		//framebuffer.UnBind();
 
 		// Draw to screen
 		glEnable(GL_DEPTH_TEST);
@@ -133,7 +118,8 @@ int main(int _argc, char** _argv) {
 
     spriteBatch.SetProjection(glm::ortho(0.0f, (float)window.GetWidth(), (float)window.GetHeight(), 0.0f));
     spriteBatch.SetView(glm::mat4());
-    spriteBatch.Draw(&texture, pos, glm::vec2(1.0, 1.0), rotate, glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), glm::vec2(0.0, 0.0));
+    spriteBatch.Draw(&texture, pos, glm::vec2(1.0, 1.0), rotate, glm::vec2(100.0, 100.0));
+    spriteBatch.Draw(&texture2, pos, glm::vec2(1.0, 1.0), -rotate, glm::vec2(0.0, 0.0));
     spriteBatch.Flush();
 
 		// Flip the display

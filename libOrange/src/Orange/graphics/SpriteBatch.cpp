@@ -4,15 +4,15 @@
 
 namespace orange {
   // Constructors
-  SpriteBatch::SpriteBatch(int _maxBatch, int _maxTextures) {
+  SpriteBatch::SpriteBatch(int _maxBatch) {
     // Create memory for sprite data.
     spriteData = new SpritePoint[_maxBatch];
     spriteDataCount = 0;
     spriteDataTotalCount = _maxBatch;
 
-    textures = new Texture*[_maxTextures];
+    maxTexturesCount = 1;
+    textures = new Texture*[maxTexturesCount];
     texturesCount = 0;
-    maxTexturesCount = _maxTextures; // Max number of different textures to store before flushing.
 
     // Create a buffer.
     mesh.SetBuffer(0, 2, GL_FLOAT, sizeof(SpritePoint), offsetof(SpritePoint, position));
@@ -114,7 +114,7 @@ namespace orange {
       return &shader;
 
     // Vertex shader
-    const char* vertex = R"END(
+    const char* vertex = R"(
       #version 400
       uniform mat4 projection;
       uniform mat4 view;
@@ -144,9 +144,9 @@ namespace orange {
 
         gl_Position = vec4(position, 0.0, 1.0);
       }
-      )END";
+      )";
 
-    const char* geometry = R"END(
+    const char* geometry = R"(
       #version 400
       layout (points) in;
       layout (triangle_strip, max_vertices=4) out;
@@ -204,10 +204,10 @@ namespace orange {
         EndPrimitive();
       }      
 
-    )END";
+    )";
 
     // Fragment shader.
-    const char* fragment = R"END(
+    const char* fragment = R"(
       #version 400
       
       in vec2 uvCoord;
@@ -215,12 +215,12 @@ namespace orange {
 
       out vec4 frag_color;
 
-      uniform sampler2D tex;
+      uniform sampler2D texture;
 
       void main() {
-        frag_color = texture2D(tex, uvCoord);
+        frag_color = texture2D(texture, uvCoord);
       }
-      )END";
+      )";
 
     shader.SetShaderSource(Shader::ShaderType::Fragment, fragment);
     shader.SetShaderSource(Shader::ShaderType::Vertex, vertex);
