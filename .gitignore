@@ -3,6 +3,7 @@
 
 # Waf stuff
 *.waf*
+*.lock-*
 build/
 
 # User-specific files
