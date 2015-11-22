@@ -1,0 +1,18 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+def options(ctx):
+    pass
+
+def configure(ctx):#
+    pass
+
+def build(ctx):
+    # Copy over everything in our data folder.
+    for file in ctx.path.ant_glob('data/**/*'):
+        ctx(feature='subst', name='data_' + file.name, rule='cp ${SRC} ${TGT}', source=file, target=file.get_bld())
+
+    ctx.program(source=ctx.path.ant_glob('src/**/*.cpp'),
+                target='orangeTest',
+                use='orange',
+                vnum='0.1')

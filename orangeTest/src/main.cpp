@@ -74,9 +74,9 @@ int main(int _argc, char** _argv) {
 
 	// Load a texture
 	Texture texture;
-	texture.LoadFromFile("test.png");
+	texture.LoadFromFile("data/test.png");
   Texture texture2;
-  texture2.LoadFromFile("rainbow.jpg");
+  texture2.LoadFromFile("data/rainbow.jpg");
 
   // Create a spriteBatch
   SpriteBatch spriteBatch;

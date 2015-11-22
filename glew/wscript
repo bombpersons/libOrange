@@ -1,0 +1,15 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+def options(ctx):
+    ctx.load('compiler_cxx')
+
+def configure(ctx):
+    ctx.check_cxx(lib='opengl32', uselib_store='opengl32', mandatory=True)
+
+def build(ctx):
+    ctx.stlib(source=ctx.path.ant_glob('src/**/*.c'),
+              target='glew',
+              includes=['include'],
+              export_includes=['include'],
+              use=['opengl32'])

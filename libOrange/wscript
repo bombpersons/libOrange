@@ -1,0 +1,23 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+def options(ctx):
+    pass
+
+def configure(ctx):
+    ctx.env.append_value('ORANGE_LIB', ['glew'])
+
+    import sys
+    if sys.platform == 'win32' or sys.platform == 'cygwin':
+        ctx.check_cxx(lib='winmm', uselib_store='winmm', mandatory=True)
+        ctx.check_cxx(lib='gdi32', uselib_store='gdi32', mandatory=True)
+        ctx.env.append_value('ORANGE_LIB', ['winmm', 'gdi32'])
+
+def build(ctx):
+    ctx.stlib(source=ctx.path.ant_glob('src/**/*.cpp'),
+              target='orange',
+              cxxflags=['-std=c++11'],
+              includes=['include'],
+              export_includes=['include'],
+              use=ctx.env.ORANGE_LIB,
+              vnum='0.1')

@@ -1,0 +1,23 @@
+{
+  "name": "Debug",
+  "targets": {
+    "Debug": {
+      "sh" : false,
+      "cwd": "{PROJECT_PATH}",
+      "cmd": "python2.7",
+      "args": ["waf", "configure", "build", "--debug=true", "--check-cxx-compiler=g++"]
+    },
+    "Release": {
+      "sh" : false,
+      "cwd": "{PROJECT_PATH}",
+      "cmd": "python2.7",
+      "args": ["waf", "configure", "build", "--check-cxx-compiler=g++"]
+    },
+    "Clean": {
+      "sh" : false,
+      "cwd": "{PROJECT_PATH}",
+      "cmd": "python2.7",
+      "args": ["waf", "distclean"]
+    }
+  }
+}
