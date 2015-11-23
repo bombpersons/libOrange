@@ -63,7 +63,7 @@ bool Win32WindowImpl::RunThread() {
 	Wait();
 
 	// Set the window long pointer to the this pointer so that the static wndproc can call the member function
-	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG)this);
+	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
 
 	// Show and update the window.
 	ShowWindow(hwnd, SW_SHOW);

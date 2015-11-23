@@ -4,7 +4,7 @@
 def options(ctx):
     ctx.add_option('--buildtest', action='store', default=False, help='Build the test application also.')
 
-def configure(ctx):#
+def configure(ctx):
     if ctx.options.buildtest:
         ctx.env.BUILD_TEST = True
     else:

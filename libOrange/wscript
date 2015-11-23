@@ -8,7 +8,7 @@ def configure(ctx):
     ctx.env.append_value('ORANGE_LIB', ['glew'])
 
     import sys
-    if sys.platform == 'win32' or sys.platform == 'cygwin':
+    if sys.platform == 'win32' or sys.platform == 'cygwin' or sys.platform == 'msys':
         ctx.check_cxx(lib='winmm', uselib_store='winmm', mandatory=True)
         ctx.check_cxx(lib='gdi32', uselib_store='gdi32', mandatory=True)
         ctx.env.append_value('ORANGE_LIB', ['winmm', 'gdi32'])
