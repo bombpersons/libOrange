@@ -274,7 +274,7 @@ RawInput::RawInput() {
       LOG(Log::CRITICAL) << "Error registering RawInput Device! Error: " << GetLastError();
 
     // Set the userdata on the window
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG)this);
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
 
     // Start the message pump.
     UpdateWindow(hwnd);

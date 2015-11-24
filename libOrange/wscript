@@ -2,12 +2,14 @@
 # encoding: utf-8
 
 def options(ctx):
-    pass
+    ctx.load('compiler_cxx')
 
 def configure(ctx):
+    ctx.load('compiler_cxx')
     ctx.env.append_value('ORANGE_LIB', ['glew'])
 
     import sys
+    print("Building for " + sys.platform)
     if sys.platform == 'win32' or sys.platform == 'cygwin' or sys.platform == 'msys':
         ctx.check_cxx(lib='winmm', uselib_store='winmm', mandatory=True)
         ctx.check_cxx(lib='gdi32', uselib_store='gdi32', mandatory=True)
@@ -19,5 +21,4 @@ def build(ctx):
               cxxflags=['-std=c++11'],
               includes=['include'],
               export_includes=['include'],
-              use=ctx.env.ORANGE_LIB,
-              vnum='0.1')
+              use=ctx.env.ORANGE_LIB)

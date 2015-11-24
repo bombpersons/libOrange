@@ -2,9 +2,10 @@
 # encoding: utf-8
 
 def options(ctx):
-    ctx.load('compiler_cxx')
+    ctx.load('compiler_c')
 
 def configure(ctx):
+    ctx.load('compiler_c')
     ctx.check_cxx(lib='opengl32', uselib_store='opengl32', mandatory=True)
 
 def build(ctx):

@@ -5,13 +5,13 @@
       "sh" : false,
       "cwd": "{PROJECT_PATH}",
       "cmd": "python2.7",
-      "args": ["waf", "configure", "build", "--debug=true", "--buildtest=true", "--check-cxx-compiler=g++"]
+      "args": ["waf", "configure", "build", "--debug=true", "--buildtest=true", "--check-cxx-compiler=g++", "--check-c-compiler=gcc"]
     },
     "Release": {
       "sh" : false,
       "cwd": "{PROJECT_PATH}",
       "cmd": "python2.7",
-      "args": ["waf", "configure", "build", "--buildtest=true", "--check-cxx-compiler=g++"]
+      "args": ["waf", "configure", "build", "--buildtest=true", "--check-cxx-compiler=g++", "--check-c-compiler=gcc"]
     },
     "Clean": {
       "sh" : false,
