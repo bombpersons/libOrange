@@ -53,7 +53,7 @@ namespace orange {
 
     // Bind the texture
     void Bind(int _num=0) const;
-    
+
     // Generate mip maps
     void GenMipMaps();
 
@@ -71,6 +71,11 @@ namespace orange {
 
     // Width and height of the texture
     int width, height;
+  };
+  struct TexturePortion {
+    Texture* texture;
+    glm::vec2 topLeft;
+    glm::vec2 bottomRight;
   };
 }
 

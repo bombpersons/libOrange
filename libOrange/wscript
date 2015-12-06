@@ -15,6 +15,9 @@ def configure(ctx):
         ctx.check_cxx(lib='gdi32', uselib_store='gdi32', mandatory=True)
         ctx.env.append_value('ORANGE_LIB', ['winmm', 'gdi32'])
 
+    ctx.check_cxx(lib='pthread', uselib_store='pthread', mandatory=True)
+    ctx.env.append_value('ORANGE_LIB', 'pthread')
+
 def build(ctx):
     ctx.stlib(source=ctx.path.ant_glob('src/**/*.cpp'),
               target='orange',

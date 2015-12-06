@@ -4,7 +4,7 @@
 #include <Orange/Types.hpp>
 
 #include <sstream>
-#include <unordered_map>
+#include <map>
 
 namespace orange {
 	class Log {
@@ -47,13 +47,13 @@ namespace orange {
 		std::ostringstream stream;
 		LogLevel curLogLevel;
 
-		static std::unordered_map<std::string, LogListener*> listeners;
+		static std::map<std::string, LogListener*> listeners;
 		static LogLevel minLogLevel;
 	};
 
 	// Use this function to log messages
 	#define LOG(level) \
-	if (level < Log::GetMinLogLevel()) ; \
+	if (level < Log::GetMinLogLevel()) {} \
 	else Log().Write(level)
 }
 

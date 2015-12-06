@@ -20,7 +20,8 @@ namespace orange {
     void SetView(const glm::mat4& _mat);
 
     // Draw something
-    void Draw(Texture* _texture, glm::vec2 _pos, glm::vec2 _scale, float _rot, glm::vec2 _origin, glm::vec2 _uvTopLeft = glm::vec2(1.0, 1.0), glm::vec2 _uvBottomRight = glm::vec2(0.0, 0.0));
+    void Draw(Texture* _texture, glm::vec2 _pos, glm::vec2 _scale, float _rot, glm::vec2 _origin = glm::vec2(0.0, 0.0), glm::vec2 _uvTopLeft = glm::vec2(0.0, 0.0), glm::vec2 _uvBottomRight = glm::vec2(1.0, 1.0));
+    void Draw(const TexturePortion*, glm::vec2 _pos, glm::vec2 _scale, float _rot, glm::vec2 _origin = glm::vec2(0.0, 0.0));
 
     // Flush
     void Flush();
@@ -38,16 +39,12 @@ namespace orange {
 
       glm::vec2 uvTop;
       glm::vec2 uvBottom;
-      unsigned int texture;
     };
 
     SpritePoint* spriteData;
     unsigned int spriteDataTotalCount;
     unsigned int spriteDataCount;
-
-    Texture** textures;
-    unsigned int texturesCount;
-    unsigned int maxTexturesCount;
+    Texture* texture;
 
     // The mesh
     Mesh mesh;

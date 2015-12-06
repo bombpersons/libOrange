@@ -10,9 +10,7 @@ namespace orange {
     spriteDataCount = 0;
     spriteDataTotalCount = _maxBatch;
 
-    maxTexturesCount = 1;
-    textures = new Texture*[maxTexturesCount];
-    texturesCount = 0;
+    texture = nullptr;
 
     // Create a buffer.
     mesh.SetBuffer(0, 2, GL_FLOAT, sizeof(SpritePoint), offsetof(SpritePoint, position));
@@ -21,14 +19,12 @@ namespace orange {
     mesh.SetBuffer(3, 2, GL_FLOAT, sizeof(SpritePoint), offsetof(SpritePoint, scale));
     mesh.SetBuffer(4, 2, GL_FLOAT, sizeof(SpritePoint), offsetof(SpritePoint, uvTop));
     mesh.SetBuffer(5, 2, GL_FLOAT, sizeof(SpritePoint), offsetof(SpritePoint, uvBottom));
-    mesh.SetBuffer(6, 1, GL_UNSIGNED_INT, sizeof(SpritePoint), offsetof(SpritePoint, texture));
     mesh.SetDrawMode(GL_POINTS);
   }
 
   SpriteBatch::~SpriteBatch() {
     // Delete the data allocated for the sprite data
     delete [] spriteData;
-    delete [] textures;
   }
 
   // Set matrices
@@ -46,27 +42,11 @@ namespace orange {
     if (spriteDataCount >= spriteDataTotalCount)
       Flush();
 
-    // Either find a texture or insert a new one.
-    bool found = false;
-    unsigned int textureId = 0;
-    for (int i = 0; i < texturesCount; ++i) {
-      if (textures[i] == _texture) {
-        textureId = i;
-        found = true;
-        break;
-      }
-    }
-
     // Store the texture and get the texture id.
-    if (!found) {
-      // If we are using too many textures
-      if (texturesCount >= maxTexturesCount)
-        Flush();
-
-      textureId = texturesCount;
-      textures[texturesCount] = _texture;
-      texturesCount++;
+    if (texture != _texture) {
+      Flush();
     }
+    texture = _texture;
 
     // Get a reference to a new sprite data.
     SpritePoint& point = spriteData[spriteDataCount];
@@ -74,16 +54,25 @@ namespace orange {
 
     // Set the position.
     point.position = _pos;
-    point.scale = glm::vec2(_scale.x * _texture->GetWidth(), _scale.y * _texture->GetHeight()); 
+    point.scale = glm::vec2(_scale.x * _texture->GetWidth(), _scale.y * _texture->GetHeight());
     point.rotation = _rot;
     point.origin = _origin;
     point.uvTop = _uvTopLeft;
     point.uvBottom = _uvBottomRight;
-    point.texture = textureId;
+  }
+
+  void SpriteBatch::Draw(const TexturePortion* _block, glm::vec2 _pos, glm::vec2 _scale, float _rot, glm::vec2 _origin) {
+    if (_block && _block->texture) {
+      Draw(_block->texture, _pos, _scale, _rot, _origin, _block->topLeft, _block->bottomRight);
+    }
   }
 
   // Flush
   void SpriteBatch::Flush() {
+    // Don't really have anything to do if we don't have any data ...
+    if (spriteDataCount <= 0)
+      return;
+
     // Ensure a context
     GLContext::EnsureContext();
 
@@ -91,18 +80,16 @@ namespace orange {
     GetShader()->Bind();
 
     // Bind textures.
-    for (int i = 0; i < texturesCount; ++i) {
-      textures[i]->Bind(i);
-    }
+    if (texture)
+      texture->Bind();
 
     // Draw our mesh.
     mesh.SetData((void*)spriteData, sizeof(SpritePoint) * spriteDataCount);
     mesh.SetVertexCount(spriteDataCount);
     mesh.Draw();
-    
+
     // Clear our buffer.
     spriteDataCount = 0;
-    texturesCount = 0;
   }
 
   // Compile the shaders
@@ -125,14 +112,12 @@ namespace orange {
       in vec2 scale;
       in vec2 uvTop;
       in vec2 uvBottom;
-      in uint texture;
 
       out vec2 vOrigin;
       out float vRotation;
       out vec2 vScale;
       out vec2 vUvTop;
       out vec2 vUvBottom;
-      out uint vTexture;
 
       void main() {
         vOrigin = origin;
@@ -140,7 +125,6 @@ namespace orange {
         vScale = scale;
         vUvTop = uvTop;
         vUvBottom = uvBottom;
-        vTexture = texture;
 
         gl_Position = vec4(position, 0.0, 1.0);
       }
@@ -159,8 +143,7 @@ namespace orange {
       in vec2 vScale[];
       in vec2 vUvTop[];
       in vec2 vUvBottom[];
-      in uint vTexture[];
-      
+
       out vec2 uvCoord;
       out uint outTexture;
 
@@ -177,39 +160,35 @@ namespace orange {
       void main() {
         float cosTheta = cos(vRotation[0]);
         float sinTheta = sin(vRotation[0]);
-        
+
         vec2 globalOrigin = gl_in[0].gl_Position.xy;
         vec2 pos = gl_in[0].gl_Position.xy - vOrigin[0];
 
         gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos);
         uvCoord = vUvTop[0];
-        outTexture = vTexture[0];
         EmitVertex();
 
         gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos + vec2(vScale[0].x, 0.0));
         uvCoord = vec2(vUvBottom[0].x, vUvTop[0].y);
-        outTexture = vTexture[0];
         EmitVertex();
 
         gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos + vec2(0, vScale[0].y));
         uvCoord = vec2(vUvTop[0].x, vUvBottom[0].y);
-        outTexture = vTexture[0];
         EmitVertex();
 
         gl_Position = projection * view * rotatePoint(cosTheta, sinTheta, globalOrigin, pos + vec2(vScale[0].x, vScale[0].y));
         uvCoord = vUvBottom[0];
-        outTexture = vTexture[0];
         EmitVertex();
 
         EndPrimitive();
-      }      
+      }
 
     )";
 
     // Fragment shader.
     const char* fragment = R"(
       #version 400
-      
+
       in vec2 uvCoord;
       in uint outTexture;
 
@@ -236,7 +215,7 @@ namespace orange {
     shader.Link();
 
     compiled = true;
-  
+
     return &shader;
   }
 }

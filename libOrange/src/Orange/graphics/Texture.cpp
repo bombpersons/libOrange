@@ -21,7 +21,7 @@ namespace orange {
   bool Texture::LoadFromMemory(const unsigned char* _buf, int _width, int _height) {
     if (!texture)
       return false;
-    
+
     // Read the data into opengl
     Bind();
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _buf);
@@ -50,8 +50,9 @@ namespace orange {
 
     // Use the load from memory function
     bool ret = LoadFromMemory(data, width, height);
-    if (ret)
+    if (ret) {
       LOG(Log::DEFAULT) << "Succesfully uploaded texture!";
+    }
 
     // Free the memory stbi made
     stbi_image_free(data);

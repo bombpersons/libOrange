@@ -12,7 +12,7 @@ const OChar* Log::LogLevelStrings[] = {
 	"FATAL"
 };
 
-std::unordered_map<std::string, Log::LogListener*> Log::listeners;
+std::map<std::string, Log::LogListener*> Log::listeners;
 Log::LogLevel Log::minLogLevel = Log::DEFAULT;
 
 Log::Log() {

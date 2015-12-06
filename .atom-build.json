@@ -4,19 +4,21 @@
     "Debug": {
       "sh" : false,
       "cwd": "{PROJECT_PATH}",
-      "cmd": "python2.7",
-      "args": ["waf", "configure", "build", "--debug=true", "--buildtest=true", "--check-cxx-compiler=g++", "--check-c-compiler=gcc"]
+      "cmd": "python",
+      "args": ["waf", "configure", "build", "--debug=true", "--buildtest=true", "--check-cxx-compiler=g++", "--check-c-compiler=gcc"],
+      "errorMatch": ["(?<file>.+):(?<line>\\d+):(?<col>\\d+): error.*", "(?<file>.+):(?<line>\\d+): undefined.*"]
     },
     "Release": {
       "sh" : false,
       "cwd": "{PROJECT_PATH}",
-      "cmd": "python2.7",
-      "args": ["waf", "configure", "build", "--buildtest=true", "--check-cxx-compiler=g++", "--check-c-compiler=gcc"]
+      "cmd": "python",
+      "args": ["waf", "configure", "build", "--buildtest=true", "--check-cxx-compiler=g++", "--check-c-compiler=gcc"],
+      "errorMatch": ["(?<file>.+):(?<line>\\d+):(?<col>\\d+): error.*", "(?<file>.+):(?<line>\\d+): undefined.*"]
     },
     "Clean": {
       "sh" : false,
       "cwd": "{PROJECT_PATH}",
-      "cmd": "python2.7",
+      "cmd": "python",
       "args": ["waf", "distclean"]
     }
   }

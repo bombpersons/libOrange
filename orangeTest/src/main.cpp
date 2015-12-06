@@ -10,10 +10,12 @@
 #include <Orange/graphics/Mesh.hpp>
 #include <Orange/maths/Maths.hpp>
 #include <Orange/graphics/Texture.hpp>
+#include <Orange/graphics/TextureAtlas.hpp>
 #include <Orange/graphics/FrameBuffer.hpp>
 #include <Orange/maths/Maths.hpp>
 #include <Orange/graphics/SpriteBatch.hpp>
 
+#include <Orange/util/Filesystem.hpp>
 #include <Orange/util/FPSDebugCamera.hpp>
 
 #include <GL/gl.h>
@@ -74,9 +76,18 @@ int main(int _argc, char** _argv) {
 
 	// Load a texture
 	Texture texture;
-	texture.LoadFromFile("data/test.png");
+	texture.LoadFromFile("data/1.jpg");
   Texture texture2;
-  texture2.LoadFromFile("data/rainbow.jpg");
+  texture2.LoadFromFile("data/2.jpg");
+
+	TextureAtlas textureAtlas;
+	for (int i = 0; i < 5; ++i) {
+		filesystem::IterateFiles("data", [&textureAtlas](const char* _path) -> bool {
+			textureAtlas.Insert(_path, _path);
+			return true;
+		});
+	}
+	textureAtlas.Build();
 
   // Create a spriteBatch
   SpriteBatch spriteBatch;
@@ -102,24 +113,30 @@ int main(int _argc, char** _argv) {
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LEQUAL);
 		glViewport(0, 0, (float)window.GetWidth(), (float)window.GetHeight());
-		//glClearColor(0.8f, 0.6f, 0.6f, 1.0f);
+		glClearColor(0.8f, 0.6f, 0.6f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	  texture.Bind();
+		static int page = 0;
+		if (window.Input()->IsKeyPressed(InputCode::Key::Right)) page++;
+		if (window.Input()->IsKeyPressed(InputCode::Key::Left)) page--;
+		if (page < 0) page = 0;
+		if (page >= textureAtlas.GetPageCount()) page = textureAtlas.GetPageCount() - 1;
+
+	  textureAtlas.GetPage(page)->Bind();
 		shader.Bind();
 		shader.SetUniform("tex", 0);
 		mesh.Draw();
 
     // Draw some sprites
-    glm::vec2 pos = window.Input()->GetMousePos();
+    glm::vec2 pos(100.0, 100.0);// = window.Input()->GetMousePos();
 
     static float rotate = 0;
-    rotate = fmod(rotate + M_PI * delta, 2 * M_PI);
+    //rotate = fmod(rotate + M_PI * delta, 2 * M_PI);
 
     spriteBatch.SetProjection(glm::ortho(0.0f, (float)window.GetWidth(), (float)window.GetHeight(), 0.0f));
     spriteBatch.SetView(glm::mat4());
-    spriteBatch.Draw(&texture, pos, glm::vec2(1.0, 1.0), rotate, glm::vec2(100.0, 100.0));
-    spriteBatch.Draw(&texture2, pos, glm::vec2(1.0, 1.0), -rotate, glm::vec2(0.0, 0.0));
+		//spriteBatch.Draw(textureAtlas.GetPage(0), pos, glm::vec2(0.2, 0.2), rotate, glm::vec2(0.0, 0.0), glm::vec2(0.0, 0.0), glm::vec2(0.5, 0.5));
+    spriteBatch.Draw(textureAtlas.Get("data/2.jpg"), pos, glm::vec2(0.2, 0.2), rotate);
     spriteBatch.Flush();
 
 		// Flip the display

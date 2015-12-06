@@ -4,7 +4,7 @@
 namespace orange {
   FrameBuffer::FrameBuffer(int _width, int _height) {
     GLContext::EnsureContext();
-    
+
     // Set defaults
     depthstencilbuffer = 0;
 
@@ -27,7 +27,7 @@ namespace orange {
     if (framebuffer)
       glDeleteFramebuffers(1, &framebuffer);
   }
-  
+
   bool FrameBuffer::AddColor(int _index) {
     if (_index >= GL_MAX_COLOR_ATTACHMENTS)
       return false;
@@ -50,6 +50,8 @@ namespace orange {
       GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + _index, GL_TEXTURE_2D, textures[_index]->GetId(), 0
     );
     glBindFramebuffer(GL_FRAMEBUFFER, prev);
+
+    return true;
   }
 
   bool FrameBuffer::AddDepthStencilBuffer() {
