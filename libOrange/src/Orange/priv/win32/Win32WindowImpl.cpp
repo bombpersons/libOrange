@@ -13,7 +13,7 @@ Win32WindowImpl::Win32WindowImpl() {
 Win32WindowImpl::~Win32WindowImpl() {
 }
 
-bool Win32WindowImpl::Create(int _width, int _height, int _depth, bool _fullscreen) {
+bool Win32WindowImpl::Setup(int _width, int _height, int _depth, bool _fullscreen) {
 	width = _width;
 	height = _height;
 	depth = _depth;

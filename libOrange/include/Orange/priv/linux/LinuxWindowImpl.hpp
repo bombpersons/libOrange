@@ -1,17 +1,18 @@
-#ifndef ORANGE_WIN32_WINDOWIMPL
-#define ORANGE_WIN32_WINDOWIMPL
+#ifndef ORANGE_LINUXWINDOWIMPL
+#define ORANGE_LINUXWINDOWIMPL
 
-#include <Windows.h>
 #include <Orange/priv/window/WindowImpl.hpp>
 #include <Orange/threads/Thread.hpp>
 
+#include <X11/Xlib.h>
+
 namespace orange {
 	namespace priv {
-		namespace win {
-			class Win32WindowImpl : public WindowImpl, public Thread {
+		namespace linux {
+			class LinuxWindowImpl : public WindowImpl, public Thread {
 			public:
-				Win32WindowImpl();
-				virtual ~Win32WindowImpl();
+				LinuxWindowImpl();
+				virtual ~LinuxWindowImpl();
 
 				// Create the window
 				virtual bool Setup(int _width, int _height, int _depth, bool _fullscreen);
@@ -36,23 +37,11 @@ namespace orange {
 				virtual int GetHeight();
 
 			private:
-				LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
-
-				// Window handle.
-				HWND hwnd;
-
-				// Variables
-				bool isOpen;
-
-				// We need to store these variables so that when Run is called we can create the window
 				int width, height, depth;
 				bool fullscreen;
 
-				// Register window class
-				static bool RegisterWindowClass();
-
-				static LRESULT CALLBACK StaticWndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
-				static LPCTSTR windowClassName;
+				::Display* display;
+				::Window window;
 			};
 
 		}

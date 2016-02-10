@@ -6,11 +6,17 @@ def options(ctx):
 
 def configure(ctx):
     ctx.load('compiler_c')
-    ctx.check_cxx(lib='opengl32', uselib_store='opengl32', mandatory=True)
+
+    # On windows we're looking for "opengl32"
+    import sys
+    if sys.platform == 'win32' or sys.platform == 'cygwin' or sys.platform == 'msys':
+        ctx.check_cxx(lib='opengl32', uselib_store='opengl', mandatory=True)
+    else:
+        ctx.check_cxx(lib='GL', uselib_store='opengl', mandatory=True)
 
 def build(ctx):
     ctx.stlib(source=ctx.path.ant_glob('src/**/*.c'),
               target='glew',
               includes=['include'],
               export_includes=['include'],
-              use=['opengl32'])
+              use=['opengl'])

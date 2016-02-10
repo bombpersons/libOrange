@@ -15,6 +15,10 @@ def configure(ctx):
         ctx.check_cxx(lib='gdi32', uselib_store='gdi32', mandatory=True)
         ctx.env.append_value('ORANGE_LIB', ['winmm', 'gdi32'])
 
+    if sys.platform == 'linux':
+        ctx.check_cxx(lib='X11', uselib_store='X11', mandatory=True)
+        ctx.env.append_value('ORANGE_LIB', ['X11']);
+
     ctx.check_cxx(lib='pthread', uselib_store='pthread', mandatory=True)
     ctx.env.append_value('ORANGE_LIB', 'pthread')
 

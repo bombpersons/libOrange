@@ -8,6 +8,9 @@ using namespace orange::priv;
 #if defined __CYGWIN__ || defined _WIN32
 #include <Orange/priv/win32/Win32InputImpl.hpp>
 typedef win::Win32InputImpl InputImplType;
+#elif defined __linux__
+#include <Orange/priv/linux/LinuxInputImpl.hpp>
+typedef linux::LinuxInputImpl InputImplType;
 #endif
 
 // Create

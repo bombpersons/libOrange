@@ -5,7 +5,7 @@
 #include <Orange/util/NoCopy.hpp>
 
 #include <GL/glew.h>
-#include <GL/GL.h>
+#include <GL/gl.h>
 
 namespace orange {
 	namespace priv {

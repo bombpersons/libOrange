@@ -8,6 +8,9 @@ using namespace orange;
 #if defined __CYGWIN__ || defined _WIN32
 #include <Orange/priv/win32/Win32GLContext.hpp>
 typedef priv::win::Win32GLContext GLContextType;
+#elif defined __linux__
+#include <Orange/priv/linux/LinuxGLContext.hpp>
+typedef priv::linux::LinuxGLContext GLContextType;
 #endif
 
 #include <Orange/priv/window/WindowImpl.hpp>

@@ -11,6 +11,9 @@ namespace orange {
 			WindowImpl();
 			virtual ~WindowImpl();
 
+			// Create the window.
+			virtual bool Setup(int _width, int _height, int _depth, bool _fullscreen) = 0;
+
 			// Opens the window
 			virtual void Run() = 0;
 

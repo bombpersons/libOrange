@@ -1,3 +1,5 @@
+#if defined __CYGWIN__ || _WIN32
+
 #include <Orange/priv/win32/Win32InputImpl.hpp>
 using namespace orange;
 using namespace orange::priv;
@@ -547,3 +549,5 @@ void Win32InputImpl::Update() {
     }
   }
 }
+
+#endif

@@ -1,11 +1,11 @@
 #include <Orange/util/Filesystem.hpp>
 
+#if defined __CYGWIN__ || _WIN32
+
 #include <Windows.h>
 
 namespace orange {
   namespace filesystem {
-
-
 
     // Iterate over the files and directories in a folder.
     void IterateFiles(const char* _path, std::function<bool(const char*)> _func) {
@@ -54,3 +54,5 @@ namespace orange {
 
   }
 }
+
+#endif

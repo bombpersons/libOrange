@@ -1,3 +1,5 @@
+#if defined __CYGWIN__ || _WIN32
+
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
@@ -5,9 +7,6 @@
 
 #include <Orange/logging/Logging.hpp>
 #include <Orange/priv/window/WindowImpl.hpp>
-
-#include <thread>
-#include <mutex>
 
 namespace orange {
   namespace priv {
@@ -202,3 +201,5 @@ namespace orange {
     }
   }
 }
+
+#endif

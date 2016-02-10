@@ -32,6 +32,12 @@ int main(int _argc, char** _argv) {
 	Window window(400, 400, 32, false);
 	window.Run();
 
+	while (window.Update()) {
+		window.Display();
+	}
+
+/*
+
 	// Create a mesh
 	const Mesh& mesh = Mesh::Cube();
 
@@ -142,6 +148,8 @@ int main(int _argc, char** _argv) {
 		// Flip the display
 		window.Display();
 	}
+
+*/
 
 	return 0;
 }

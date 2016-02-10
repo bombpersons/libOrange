@@ -1,4 +1,4 @@
-#ifndef ORANGE_FPSDEGUGCAMERA
+#ifndef ORANGE_FPSDEBUGCAMERA
 #define ORANGE_FPSDEBUGCAMERA
 
 #include <glm/glm.hpp>
