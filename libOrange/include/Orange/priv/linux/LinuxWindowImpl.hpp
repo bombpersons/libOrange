@@ -2,20 +2,31 @@
 #define ORANGE_LINUXWINDOWIMPL
 
 #include <Orange/priv/window/WindowImpl.hpp>
+#include <Orange/priv/linux/LinuxGLContext.hpp>
 #include <Orange/threads/Thread.hpp>
 
 #include <X11/Xlib.h>
+#include <X11/Xlib-xcb.h>
+#include <xcb/xcb.h>
 
 namespace orange {
 	namespace priv {
 		namespace linux {
 			class LinuxWindowImpl : public WindowImpl, public Thread {
+				friend class LinuxGLContext;
+			public:
+				static ::GLXFBConfig GetBestFBConfig(::Display* display, int screenId, const GLContext::Settings& _settings);
+				static ::XVisualInfo* GetVisualInfoFromSettings(::Display* display, int screenId, const GLContext::Settings& _settings);
+				static ::Display* GetDisplay();
+
+      	static xcb_connection_t* GetXCBConnection();
+
 			public:
 				LinuxWindowImpl();
 				virtual ~LinuxWindowImpl();
 
 				// Create the window
-				virtual bool Setup(int _width, int _height, int _depth, bool _fullscreen);
+				virtual bool Setup(int _width, int _height, int _depth, bool _fullscreen, const GLContext::Settings& _settings);
 
 				// Called by thread
 				virtual bool RunThread();
@@ -39,9 +50,11 @@ namespace orange {
 			private:
 				int width, height, depth;
 				bool fullscreen;
+				GLContext::Settings settings;
 
-				::Display* display;
-				::Window window;
+				bool running;
+
+				xcb_window_t window;
 			};
 
 		}

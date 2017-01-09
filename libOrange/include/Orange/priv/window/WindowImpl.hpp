@@ -2,6 +2,7 @@
 #define ORANGE_WINDOWIMPL
 
 #include <Orange/util/NoCopy.hpp>
+#include <Orange/gl/GLContext.hpp>
 
 namespace orange {
 	namespace priv {
@@ -12,7 +13,7 @@ namespace orange {
 			virtual ~WindowImpl();
 
 			// Create the window.
-			virtual bool Setup(int _width, int _height, int _depth, bool _fullscreen) = 0;
+			virtual bool Setup(int _width, int _height, int _depth, bool _fullscreen, const GLContext::Settings& _settings) = 0;
 
 			// Opens the window
 			virtual void Run() = 0;
@@ -31,7 +32,7 @@ namespace orange {
 			virtual int GetHeight() = 0;
 
 			// Change the width, height, depth or fullscreen flags
-			static WindowImpl* Create(int _width, int _height, int _depth, bool _fullscreen);
+			static WindowImpl* Create(int _width, int _height, int _depth, bool _fullscreen, const GLContext::Settings& _settings);
 
 		private:
 

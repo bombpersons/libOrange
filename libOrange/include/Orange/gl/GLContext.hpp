@@ -4,8 +4,7 @@
 // This file is heavily based on the SMFL GlContext class.
 #include <Orange/util/NoCopy.hpp>
 
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <glad/glad.h>
 
 namespace orange {
 	namespace priv {
@@ -37,6 +36,10 @@ namespace orange {
 			unsigned int MajorVersion;
 			unsigned int MinorVersion;
 		};
+	public:
+
+
+
 	public:
 		GLContext();
 		virtual ~GLContext();

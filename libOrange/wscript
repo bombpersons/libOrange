@@ -6,7 +6,7 @@ def options(ctx):
 
 def configure(ctx):
     ctx.load('compiler_cxx')
-    ctx.env.append_value('ORANGE_LIB', ['glew'])
+    ctx.env.append_value('ORANGE_LIB', ['glad'])
 
     import sys
     print("Building for " + sys.platform)
@@ -17,7 +17,14 @@ def configure(ctx):
 
     if sys.platform == 'linux':
         ctx.check_cxx(lib='X11', uselib_store='X11', mandatory=True)
-        ctx.env.append_value('ORANGE_LIB', ['X11']);
+        ctx.env.append_value('ORANGE_LIB', ['X11'])
+        ctx.check_cxx(lib='X11-xcb', uselib_store='X11-xcb', mandatory=True)
+        ctx.env.append_value('ORANGE_LIB', ['X11-xcb'])
+
+        ctx.check_cfg(package='xcb', args='--cflags --libs', uselib_store='xcb', mandatory=True)
+        ctx.env.append_value('ORANGE_LIB', ['xcb'])
+
+
 
     ctx.check_cxx(lib='pthread', uselib_store='pthread', mandatory=True)
     ctx.env.append_value('ORANGE_LIB', 'pthread')

@@ -4,6 +4,7 @@
 
 #include <dirent.h>
 #include <stdio.h>
+#include <string.h>
 
 namespace orange {
   namespace filesystem {
@@ -15,7 +16,7 @@ namespace orange {
       d = opendir(_path);
       if (d) {
         while ((dir = readdir(d)) != nullptr) {
-          if (dir->d_type == DT_DIR) {
+          if (dir->d_type == DT_REG) {
             std::string fullpath = std::string(_path) + "/" + dir->d_name;
             _func(fullpath.c_str());
           }
@@ -33,7 +34,7 @@ namespace orange {
       d = opendir(_path);
       if (d) {
         while ((dir = readdir(d)) != nullptr) {
-          if (dir->d_type == DT_REG) {
+          if (dir->d_type == DT_DIR && strcmp(dir->d_name, "..") != 0 && strcmp(dir->d_name, ".") != 0) {
             std::string fullpath = std::string(_path) + "/" + dir->d_name;
             _func(fullpath.c_str());
           }

@@ -1,8 +1,7 @@
 #ifndef ORANGE_SHADER
 #define ORANGE_SHADER
 
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <glad/glad.h>
 #include <Orange/gl/GLResource.hpp>
 #include <Orange/gl/GLContext.hpp>
 #include <Orange/logging/Logging.hpp>

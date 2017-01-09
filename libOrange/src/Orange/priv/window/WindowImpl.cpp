@@ -18,9 +18,9 @@ WindowImpl::~WindowImpl() {
 
 }
 
-WindowImpl* WindowImpl::Create(int _width, int _height, int _depth, bool _fullscreen) {
+WindowImpl* WindowImpl::Create(int _width, int _height, int _depth, bool _fullscreen, const GLContext::Settings& _settings) {
 	WindowImplType* window = new WindowImplType();
-	if (window->Setup(_width, _height, _depth, _fullscreen))
+	if (window->Setup(_width, _height, _depth, _fullscreen, _settings))
 		return window;
 
 	delete window;

@@ -28,15 +28,9 @@ int main(int _argc, char** _argv) {
 	// Add log listeners.
 	Log::AddListener("Console", new ConsoleLogListener());
 
-	// Create a window
+	// // Create a window
 	Window window(400, 400, 32, false);
 	window.Run();
-
-	while (window.Update()) {
-		window.Display();
-	}
-
-/*
 
 	// Create a mesh
 	const Mesh& mesh = Mesh::Cube();
@@ -51,7 +45,7 @@ int main(int _argc, char** _argv) {
 
 	"void main() {\n"
 	"	frag_color = texture2D(tex, texcoord);\n"
-		"}\n";
+	"}\n";
 
 	const char* vertex =
 	"#version 400\n"
@@ -148,8 +142,6 @@ int main(int _argc, char** _argv) {
 		// Flip the display
 		window.Display();
 	}
-
-*/
 
 	return 0;
 }

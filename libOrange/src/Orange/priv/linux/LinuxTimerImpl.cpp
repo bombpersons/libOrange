@@ -19,8 +19,7 @@ namespace orange {
         oldTime = newTime;
 
         // Convert our nanosecond time to seconds...
-        return (double)nanoDiff * 1000000000.0;
-
+        return (double)nanoDiff / 1000000000.0;
       }
 
     }

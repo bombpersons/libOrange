@@ -1,8 +1,8 @@
 #ifndef ORANGE_LINUXGLCONTEXT
 #define ORANGE_LINUXGLCONTEXT
 
-#include <GL/glew.h>
-#include <GL/glxew.h>
+#include <glad/glad.h>
+#include <glad/glad_glx.h>
 
 #include <X11/Xlib.h>
 
@@ -29,9 +29,13 @@ namespace orange {
         virtual bool MakeCurrent();
 
       private:
-        
         // Create a context.
         void CreateContext(LinuxGLContext* _shared, const GLContext::Settings& _settings);
+
+      private:
+        ::Display* display;
+        ::Window window;
+        GLXContext context;
       };
 
     }

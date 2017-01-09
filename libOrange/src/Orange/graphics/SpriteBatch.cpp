@@ -145,7 +145,7 @@ namespace orange {
       in vec2 vUvBottom[];
 
       out vec2 uvCoord;
-      out uint outTexture;
+      flat out uint outTexture;
 
       vec4 rotatePoint(float cosValue, float sinValue, vec2 origin, vec2 point) {
         // Get the difference between each point and the origin and rotate it.
@@ -190,7 +190,7 @@ namespace orange {
       #version 400
 
       in vec2 uvCoord;
-      in uint outTexture;
+      flat in uint outTexture;
 
       out vec4 frag_color;
 

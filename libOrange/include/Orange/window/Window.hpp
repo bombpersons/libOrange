@@ -10,7 +10,7 @@ namespace orange {
 	class Window : public GLResource {
 	public:
 		Window();
-		Window(int _width, int _height, int _depth, bool _fullscreen);
+		Window(int _width, int _height, int _depth, bool _fullscreen, GLContext::Settings _settings=GLContext::Settings());
 		virtual ~Window();
 
 		// Get the inputimpl

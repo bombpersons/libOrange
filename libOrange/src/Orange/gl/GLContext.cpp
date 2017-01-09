@@ -1,5 +1,3 @@
-#include <GL/glew.h>
-
 #include <Orange/gl/GLContext.hpp>
 using namespace orange;
 
@@ -32,6 +30,12 @@ thread_local GLContext* currentContext;
 thread_local GLContext* internalContext;
 std::set<GLContext*> internalContexts;
 std::mutex internalContextsMutex;
+
+#ifdef DEBUG
+static void PreGLCall(const char* name, void* funcPtr, int len_args, ...) {
+  LOG(Log::DEFAULT) << name << "() called.");
+}
+#endif
 
 // Check if a thread has an internal context or not.
 static bool HasInternalContext() {
@@ -116,17 +120,26 @@ void GLContext::StaticInit() {
     return; // Don't init more than once!
   }
 
-  // Create the context and make it active so we can init glew
+  // Create the context and make it active so we can init glad
   shared = new GLContextType(nullptr);
+
+  // Make this current, whilst we get our new gl extensions.
+  shared->SetActive(true);
+
+  // Initialize glad
+#ifdef DEBUG
+  glad_set_pre_callback(PreGLCall);
+#endif
+
+  if (!gladLoadGL()) {
+      LOG(Log::FATAL) << "Error initializing glew! Opengl Error: " << glGetError();
+  }
+
+  // Unset it to be not active.
+  shared->SetActive(false);
 
   // Initialize the shared context and what not.
   shared->Init();
-  shared->SetActive(false);
-
-  // Initialize glew
-  if (glewInit() != GLEW_OK) {
-      LOG(Log::FATAL) << "Error initializing glew! Opengl Error: " << glGetError();
-  }
 }
 void GLContext::StaticShutdown() {
   if (!shared) {

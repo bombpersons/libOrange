@@ -7,11 +7,11 @@ Window::Window() {
 	input = 0;
 }
 
-Window::Window(int _width, int _height, int _depth, bool _fullscreen) {
+Window::Window(int _width, int _height, int _depth, bool _fullscreen, GLContext::Settings _settings) {
 	window = 0;
 	context = 0;
 	input = 0;
-	Create(_width, _height, _depth, _fullscreen);
+	Create(_width, _height, _depth, _fullscreen, _settings);
 }
 
 Window::~Window() {
@@ -89,7 +89,7 @@ bool Window::Create(int _width, int _height, int _depth, bool _fullscreen, GLCon
 		delete context;
 
 	// Create new window.
-	window = priv::WindowImpl::Create(_width, _height, _depth, _fullscreen);
+	window = priv::WindowImpl::Create(_width, _height, _depth, _fullscreen, _settings);
 	if (!window)
 		return false;
 

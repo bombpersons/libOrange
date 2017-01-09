@@ -10,7 +10,7 @@ out = 'build'
 def options(ctx):
     ctx.load('compiler_cxx')
     ctx.add_option('--debug', action='store', default=False, help='Build with debug symbols')
-    ctx.recurse('glew libOrange orangeTest')
+    ctx.recurse('glad libOrange orangeTest')
 
 def configure(ctx):
     ctx.load('compiler_cxx')
@@ -20,7 +20,7 @@ def configure(ctx):
     else:
         ctx.env.append_value('CXXFLAGS', ['-O3'])
 
-    ctx.recurse('glew libOrange orangeTest')
+    ctx.recurse('glad libOrange orangeTest')
 
 def build(ctx):
-    ctx.recurse('glew libOrange orangeTest')
+    ctx.recurse('glad libOrange orangeTest')
