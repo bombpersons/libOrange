@@ -73,7 +73,7 @@ namespace orange {
     move.x += _window->Input()->IsKeyDown(InputCode::Key::A) ? -1 : 0;
     move.x += _window->Input()->IsKeyDown(InputCode::Key::D) ? 1 : 0;
     move.y += _window->Input()->IsKeyDown(InputCode::Key::Space) ? 1 : 0;
-    move.y += _window->Input()->IsKeyDown(InputCode::Key::LShift) ? -1 : 0;
+    move.y += _window->Input()->IsKeyDown(InputCode::Key::LeftShift) ? -1 : 0;
 
     // Normalize the movement
     if (move.x != 0 || move.y != 0 || move.z != 0)

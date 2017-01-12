@@ -4,6 +4,11 @@
 #include <Orange/priv/window/WindowImpl.hpp>
 #include <Orange/priv/input/InputImpl.hpp>
 
+#include <map>
+
+#include <X11/Xlib.h>
+#include <X11/extensions/XInput2.h>
+
 namespace orange {
   namespace priv {
     namespace linux {
@@ -43,6 +48,43 @@ namespace orange {
 
       private:
         WindowImpl* window;
+
+        // Display and dummy window used to recieve raw input messages.
+        ::Display* display;
+        ::Window dummyWindow;
+        int xinputOpcode;
+
+        // Store mappings of hardware ids.
+        void UpdateDevices();
+
+        struct MouseDevice {
+          MouseDevice() {
+            ScrollX.number = -1;
+            ScrollY.number = -1;
+            MotionX.number = -1;
+            MotionY.number = -1;
+            AbsoluteX.number = -1;
+            AbsoluteY.number = -1;
+          }
+          XIScrollClassInfo ScrollX, ScrollY;
+          XIValuatorClassInfo MotionX, MotionY, AbsoluteX, AbsoluteY;
+        };
+        std::map<int, MouseDevice> mousemapping;
+
+        // Keyboard
+        bool KeyboardKeys[InputCode::Key::Count] = {};
+        bool OldKeyboardKeys[InputCode::Key::Count] = {};
+
+        // Mouse
+        double MouseRelX;
+        double MouseRelY;
+        double MouseAbsoluteX;
+        double MouseAbsoluteY;
+        double MouseRelWheelX;
+        double MouseRelWheelY;
+
+        bool MouseButtons[InputCode::MouseButton::Count];
+        bool OldMouseButtons[InputCode::MouseButton::Count];
       };
 
     }

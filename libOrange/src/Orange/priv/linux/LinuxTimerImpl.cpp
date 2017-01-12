@@ -15,11 +15,14 @@ namespace orange {
       double LinuxTimerImpl::Reset() {
         struct timespec newTime;
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &newTime);
-        long nanoDiff = newTime.tv_nsec - oldTime.tv_nsec;
+
+        // Could we get precision problems here??
+        double newSeconds = newTime.tv_sec + ((double)newTime.tv_nsec / 1000000000.0);
+        double oldSeconds = oldTime.tv_sec + ((double)oldTime.tv_nsec / 1000000000.0);
         oldTime = newTime;
 
         // Convert our nanosecond time to seconds...
-        return (double)nanoDiff / 1000000000.0;
+        return newSeconds - oldSeconds;
       }
 
     }

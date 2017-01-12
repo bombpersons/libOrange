@@ -128,14 +128,14 @@ int main(int _argc, char** _argv) {
 		mesh.Draw();
 
     // Draw some sprites
-    glm::vec2 pos(100.0, 100.0);// = window.Input()->GetMousePos();
+    glm::vec2 pos = window.Input()->GetMousePos();
 
     static float rotate = 0;
-    //rotate = fmod(rotate + M_PI * delta, 2 * M_PI);
+    rotate += M_PI * 10 * delta;
 
     spriteBatch.SetProjection(glm::ortho(0.0f, (float)window.GetWidth(), (float)window.GetHeight(), 0.0f));
     spriteBatch.SetView(glm::mat4());
-		//spriteBatch.Draw(textureAtlas.GetPage(0), pos, glm::vec2(0.2, 0.2), rotate, glm::vec2(0.0, 0.0), glm::vec2(0.0, 0.0), glm::vec2(0.5, 0.5));
+		spriteBatch.Draw(textureAtlas.GetPage(0), pos, glm::vec2(0.2, 0.2), rotate, glm::vec2(0.0, 0.0), glm::vec2(0.0, 0.0), glm::vec2(0.5, 0.5));
     spriteBatch.Draw(textureAtlas.Get("data/2.jpg"), pos, glm::vec2(0.2, 0.2), rotate);
     spriteBatch.Flush();
 

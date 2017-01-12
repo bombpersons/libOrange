@@ -160,9 +160,7 @@ namespace orange {
         windowAttribs.background_pixel = WhitePixel(GetDisplay(), screenId);
         windowAttribs.override_redirect = True;
         windowAttribs.colormap = XCreateColormap(GetDisplay(), RootWindow(GetDisplay(), screenId), vi->visual, AllocNone);
-        windowAttribs.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |
-                                   EnterWindowMask | LeaveWindowMask |
-                                   FocusChangeMask;
+        windowAttribs.event_mask = ExposureMask | FocusChangeMask;
         window = XCreateWindow(GetDisplay(),
                                RootWindow(GetDisplay(), screenId),
                                0, 0,
@@ -190,6 +188,7 @@ namespace orange {
 
         XUnlockDisplay(GetDisplay());
 
+        // Loop through the events dealing with them.
         running = true;
         while (running) {
           xcb_generic_event_t* event = xcb_wait_for_event(GetXCBConnection());

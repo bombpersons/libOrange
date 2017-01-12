@@ -16,7 +16,7 @@ namespace orange {
         virtual double Reset();
 
       private:
-        struct timespec oldTime;
+        struct timespec oldTime = {};
 
       };
     }
